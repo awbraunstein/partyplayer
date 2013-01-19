@@ -39,8 +39,13 @@
     , req.body.longitude
     ]
 
-    Party.find $within: { $center: [loc, 0.1] }, (err,ps) ->
-      if not err
+    Party.find
+      $within:
+        $center: [loc, 0.1]
+    , (err, ps) ->
+      if err
+        res.send []
+      else
         res.send ps
 
 )()

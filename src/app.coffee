@@ -47,7 +47,7 @@
   app.get '/:id',     router.party.party
 
   # POST -> request data
-  app.post '/nearby',  router.party.findParties
+  app.post '/nearby', router.party.findParties
 
   # --------------------------------------------------------------------------
   # Start Server

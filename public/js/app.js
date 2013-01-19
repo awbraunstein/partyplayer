@@ -17,7 +17,7 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, Party, PartyClientView, SearchView, init, initClient, sampleParty, sampleSong, server, utils, _;
+  var $, Backbone, Party, PartyClientView, init, initClient, sampleParty, sampleSong, server, utils, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
@@ -25,20 +25,14 @@ define(function(require, exports, module) {
   server = require('server');
   Party = require('models/party');
   PartyClientView = require('views/partyClient');
-  SearchView = require('views/search');
   initClient = function(party) {
-    var $partyClient, clientView, searchView;
+    var $partyClient, clientView;
     $partyClient = $('#party-client');
     clientView = new PartyClientView({
       model: new Party(party)
     });
     $partyClient.empty().append(clientView.$el);
-    clientView.render();
-    searchView = new SearchView();
-    return searchView.search('Trey anastasio', function(source, results) {
-      console.log(source);
-      return console.log(results);
-    });
+    return clientView.render();
   };
   sampleSong = {
     type: 'Spotify',

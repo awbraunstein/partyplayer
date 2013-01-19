@@ -24,7 +24,6 @@ define (require, exports, module) ->
 
   Party           = require 'models/party'
   PartyClientView = require 'views/partyClient'
-  SearchView      = require 'views/search'
 
   initClient = (party) ->
     $partyClient = $('#party-client')
@@ -34,10 +33,6 @@ define (require, exports, module) ->
 
     $partyClient.empty().append clientView.$el
     clientView.render()
-    searchView = new SearchView()
-    searchView.search 'Trey anastasio', (source, results) ->
-      console.log source
-      console.log results
 
   sampleSong =
     type: 'Spotify'

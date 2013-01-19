@@ -1,6 +1,10 @@
 <div class='mobile-client'>
   <h1>{{name}}</h1>
-  <input type='text' placeholder='Search for songs...' autofocus='autofocus'/>
+  <input id='search' type='text' placeholder='Search for songs...'
+         autofocus='autofocus'/>
+  <div id='search-results'>
+
+  </div>
 
   {{#with playing}}
   <div class='now-playing'>
