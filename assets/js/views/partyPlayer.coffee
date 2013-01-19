@@ -7,7 +7,7 @@ define (require, exports, module) ->
 
   SC.initialize client_id: '0bc80f756a59625ed11e9791f107004a'
 
-  exports.partyPlayer = Backbone.View.extend
+  exports.PartyPlayerView = Backbone.View.extend
     
     initialize: () ->
       console.log 'player view init'
