@@ -9,6 +9,7 @@
       type: Number
       default: 1
     uri: String
+    duration: Number
     timestamp: Date
 
   partySchema = mongoose.Schema
