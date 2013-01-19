@@ -1,7 +1,12 @@
-mongoose = require 'mongoose'
-mongoose.connect 'mongodb://localhost/party'
+(->
+  mongoose = require 'mongoose'
+  mongoose.connect 'mongodb://localhost/party'
 
-partySchema = mongoose.Schema name: String,
-  songs: [type: String, score: Number, uri: String]
+  partySchema = mongoose.Schema name: String,
+    loc: [Number],
+    songs: [type: String, score: Number, uri: String]
 
-module.exports.Party = mongoose.model('Party', partySchema)
+  partySchema.index loc: "2d"
+
+  module.exports.Party = mongoose.model('Party', partySchema)
+)()
