@@ -4,10 +4,14 @@ requirejs.config
     jquery:     '/lib/js/jquery-1.9.0.min'
     underscore: '/lib/js/underscore'
     backbone:   '/lib/js/backbone'
+    handlebars: '/lib/js/handlebars'
   shim:
     backbone:
       deps: ['underscore', 'jquery']
       exports: 'Backbone'
+    handlebars:
+      deps: ['underscore']
+      exports: 'Handlebars'
 
 define (require, exports, module) ->
 
@@ -36,15 +40,16 @@ define (require, exports, module) ->
   sampleSong =
     type: 'Spotify'
     score: 4
-    uri: 'http://open.spotify.com/track/1eozfgjK3LKYLe89MUo0tC'
-    timestamp:
-      Date.now
+    uri: 'http://open.spotify.com/track/31yCrPeqVYke01Un3jPVWk'
+    title: 'Alligator'
+    artist: 'The Babies'
+    timestamp: Date.now
 
   sampleParty =
     name: 'rad party'
     loc: [39, -75]
     playing: sampleSong
-    songs: [sampleSong]
+    requests: [sampleSong]
 
   init = () ->
     unless 'geolocation' of navigator
@@ -58,10 +63,6 @@ define (require, exports, module) ->
         # TODO: use real data
         $ -> initClient sampleParty
 
-  console.log 'underscore...'
-  console.log _
-  console.log 'Backbone...'
-  console.log Backbone
   init()
 
   $ ->

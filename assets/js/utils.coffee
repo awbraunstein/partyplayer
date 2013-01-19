@@ -1,14 +1,18 @@
 define (require, exports, module) ->
 
-  _  = require '/lib/js/lodash.js'
-  $  = require 'jquery'
+  _           = require 'underscore'
+  $           = require 'jquery'
+  Handlebars  = require 'handlebars'
 
-  require '/lib/js/handlebars.js'
+  # Load all necessary handlebars templates here, then access them during
+  # compilation process in `utils.tmpl`
+  templates =
+    mobileClient: require 'text!templates/mobile-client.handlebars'
 
   utils =
 
     tmpl: (id, context) ->
-      source = $("##{id}-tmpl").html()
+      source = templates[id]
       template = Handlebars.compile source
       return template(context)
 

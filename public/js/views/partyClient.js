@@ -5,12 +5,15 @@ define(function(require, exports, module) {
   Backbone = require('backbone');
   utils = require('utils');
   return exports.partyClientView = Backbone.View.extend({
-    template: 'mobile-client',
+    template: 'mobileClient',
     initialize: function() {
       return console.log('client view init');
     },
     render: function() {
-      this.$el.html(utils.tmpl(this.template, this.model.toJSON()));
+      var html;
+      console.log(this.model.toJSON());
+      html = utils.tmpl(this.template, this.model.toJSON());
+      this.$el.html(html);
       return this;
     }
   });

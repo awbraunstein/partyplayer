@@ -7,11 +7,13 @@ define (require, exports, module) ->
 
   exports.partyClientView = Backbone.View.extend
 
-    template: 'mobile-client'
+    template: 'mobileClient'
 
     initialize: () ->
       console.log 'client view init'
 
     render: () ->
-      this.$el.html(utils.tmpl this.template, this.model.toJSON())
+      console.log this.model.toJSON()
+      html = utils.tmpl this.template, this.model.toJSON()
+      this.$el.html html
       return this

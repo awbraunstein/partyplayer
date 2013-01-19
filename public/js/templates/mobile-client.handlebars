@@ -1,0 +1,23 @@
+<div class='mobile-client'>
+  <h1>{{name}}</h1>
+  <input type='text' placeholder='Search for songs...' autofocus='autofocus'/>
+
+  {{#with playing}}
+  <div class='now-playing'>
+    <a href="{{uri}}">
+      <h3>{{title}} - {{artist}}</h3>
+    </a>
+    {{score}}
+  </div>
+  {{/with}}
+
+  <div class='requests'>
+    <ul>
+      {{#each requests}}
+        <li>
+          <a href="{{uri}}">{{title}} - {{artist}}</a>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
