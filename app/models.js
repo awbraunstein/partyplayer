@@ -25,31 +25,37 @@
   partySchema.index({
     loc: "2d"
   });
-  partySchema.methods.voteSong = function(song, increment) {
-    var s, _i, _len, _ref, _results;
+  partySchema.methods.voteSong = function(uri, increment) {
+    var s, _i, _len, _ref;
     _ref = this.songs;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       s = _ref[_i];
-      if (s === song) {
-        _results.push(s.score += increment);
-      } else {
-        _results.push(void 0);
+      if (s.uri === uri) {
+        s.score += increment;
+        this.model('Party').save();
+        return s;
       }
     }
-    return _results;
   };
-  partySchema.methods.upvoteSong = function(song) {
+  partySchema.methods.upvoteSong = function(uri) {
     return partySchema.methods.voteSong(1);
   };
-  partySchema.methods.upvoteSong = function(song) {
+  partySchema.methods.downvoteSong = function(uri) {
     return partySchema.methods.voteSong(-1);
   };
   partySchema.methods.addSong = function(song) {
+    var s, _i, _len, _ref;
     this.songs.push(song);
-    return this.model('Party').save();
+    this.model('Party').save();
+    _ref = this.songs;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      s = _ref[_i];
+      if (s.uri === song.uri) {
+        return s;
+      }
+    }
   };
-  partySchema.methods.playNextSong = function(song) {
+  partySchema.methods.playNextSong = function(uri) {
     return null;
   };
   return module.exports.Party = mongoose.model('Party', partySchema);

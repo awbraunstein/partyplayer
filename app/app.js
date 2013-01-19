@@ -46,13 +46,13 @@
   });
   io.sockets.on('connection', function(socket) {
     socket.on('joinparty', function(data) {
-      var pdata;
+      var party;
       console.log(data);
-      pdata = "";
       socket.party = data.id;
       socket.join(socket.party);
       socket.emit('joined', 'SERVER', "you have joined the " + socket.party + " party.");
-      return socket.emit('populate', 'SERVER', pdata);
+      party = socket.party;
+      return socket.emit('populate', 'SERVER', party);
     });
     socket.on('createparty', function(data) {
       console.log(data);
@@ -61,16 +61,29 @@
       return socket.emit('joined', 'SERVER', "you have joined the " + socket.party + " party.");
     });
     socket.on('playsong', function(data) {
+      var party;
       console.log(data);
-      return io.sockets["in"](socket.party).emit('playsong', 'SERVER', data);
+      party = Party.findById(socket.party);
+      return party.io.sockets["in"](socket.party).emit('playsong', 'SERVER', data);
     });
     socket.on('addsong', function(data) {
+      var party, song;
       console.log(data);
-      return io.sockets["in"](socket.party).emit('addsong', 'SERVER', data);
+      party = Party.findById(socket.party);
+      song = party.addSong({
+        type: data.type,
+        score: 0,
+        uri: data.uri,
+        timestamp: Date.now()
+      });
+      return io.sockets["in"](socket.party).emit('addsong', 'SERVER', song);
     });
     socket.on('vote', function(data) {
+      var party, song;
       console.log(data);
-      return io.sockets["in"](socket.party).emit('vote', 'SERVER', data);
+      party = Party.findById(socket.party);
+      song = data.vote === 'up' ? party.upvoteSong(data.uri) : party.downvoteSong(data.uri);
+      return io.sockets["in"](socket.party).emit('vote', 'SERVER', song);
     });
     return socket.on('disconnect', function() {
       return socket.leave(socket.room);
