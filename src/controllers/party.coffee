@@ -26,11 +26,9 @@
           party: p
 
   exports.findParties = (req, res) ->
-    console.log 'findParties! *****************************'
-    console.log req.params
     loc = [
-      req.params.latitude
-    , req.params.longitude
+      req.body.latitude
+    , req.body.longitude
     ]
 
     ps = Party.find

@@ -32,9 +32,7 @@
   };
   return exports.findParties = function(req, res) {
     var loc, ps;
-    console.log('findParties! *****************************');
-    console.log(req.params);
-    loc = [req.params.latitude, req.params.longitude];
+    loc = [req.body.latitude, req.body.longitude];
     ps = Party.find({
       $within: {
         $center: [loc, 0.1]
