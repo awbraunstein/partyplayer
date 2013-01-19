@@ -1,6 +1,11 @@
 extends layout
+
 block content
   #main.container
     h1 partyplayer
     #party-client
       h3 Client
+
+block append scripts
+  script(id='mobile-client-tmpl', type='text/x-handlebars-template')
+    <div class='mobile-client'> {{name}} </div>
