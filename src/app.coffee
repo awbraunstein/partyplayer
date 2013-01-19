@@ -71,7 +71,16 @@
       socket.join socket.party
       socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
     )
-    
+
+    socket.on('playsong', (data) ->
+      # play a song by moving it into now playing
+      # and removing it from the playlist
+      # data is {song}
+      console.log data
+
+      io.sockets.in(socket.party).emit('playsong', 'SERVER', data)
+    )
+
     socket.on('addsong', (data) ->
       # add song to a party playlist
       # data is {id: room_id, type: media_type, uri: url/uri}
@@ -91,7 +100,11 @@
       # send out the update to everyone
       io.sockets.in(socket.party).emit('vote', 'SERVER', data)
     )
-  )
+
+    socket.on('disconnect', () ->
+      socket.leave socket.room
+    )
+  )  
 
   return null
 )()
