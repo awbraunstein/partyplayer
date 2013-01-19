@@ -2,10 +2,38 @@
 (function() {
 
   define(function(require, exports, module) {
-    var $, utils, _;
-    _ = require('/lib/js/lodash.js');
+    var $, Backbone, PartyClient, PartyClientView, init, initClient, server, utils, _;
     $ = require('jquery');
+    _ = require('/lib/js/lodash.js');
+    Backbone = require('/lib/js/backbone.js');
     utils = require('utils');
+    server = require('server');
+    PartyClient = require('models/partyClient');
+    PartyClientView = require('views/partyClient');
+    initClient = function(party) {
+      var $partyClient, clientView;
+      $partyClient = $('#party-client');
+      clientView = PartyClientView({
+        model: PartyClient(party)
+      });
+      $partyClient.empty.append(clientView.$el);
+      return clientView.render();
+    };
+    init = function() {
+      if ('geolocation' in navigator) {
+        return navigator.geolocation.getCurrentPosition(function(position) {
+          console.log('finding nearby parties...');
+          return server.findParties(position.coords, function(parties) {
+            console.log('found parties...');
+            console.log(parties);
+            return initClient(parties[0]);
+          });
+        });
+      } else {
+        return console.log('not supported in browser');
+      }
+    };
+    init();
     $(function() {
       return console.log('DOM ready');
     });
