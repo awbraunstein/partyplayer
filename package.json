@@ -1,5 +1,5 @@
 {
-  "name": "node-portfolio"
+  "name": "partyplayer"
 , "version": "0.0.1"
 , "private": true
 , "repository": {
@@ -17,6 +17,7 @@
   , "which": "latest"
   , "coffee-script": "latest"
   , "mongoose": "latest"
+  , "socket.io": "latest"
   }
 , "scripts": {
     "start": "node server.js"
