@@ -72,7 +72,7 @@
       socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
     )
 
-    socket.on('playsong'), (data) ->
+    socket.on('playsong', (data) ->
       # play a song by moving it into now playing
       # and removing it from the playlist
       # data is {song}
@@ -100,7 +100,11 @@
       # send out the update to everyone
       io.sockets.in(socket.party).emit('vote', 'SERVER', data)
     )
-  )
+
+    socket.on('disconnect', () ->
+      socket.leave socket.room
+    )
+  )  
 
   return null
 )()
