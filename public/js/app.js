@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     $partyClient.empty().append(clientView.$el);
     clientView.render();
     searchView = new SearchView();
-    return searchView.searchYoutube('two coins');
+    return searchView.search('two coins');
   };
   sampleSong = {
     type: 'Spotify',

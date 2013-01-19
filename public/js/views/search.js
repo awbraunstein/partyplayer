@@ -13,6 +13,11 @@ define(function(require, exports, module) {
         client_id: '0bc80f756a59625ed11e9791f107004a'
       });
     },
+    search: function(str) {
+      this.searchYoutube(str);
+      this.searchSoundcloud(str);
+      return this.searchSpotify(str);
+    },
     searchYoutube: function(str) {
       var params, url, youtube_base_url;
       youtube_base_url = 'https://gdata.youtube.com/feeds/api/videos';
@@ -26,15 +31,43 @@ define(function(require, exports, module) {
       };
       url = "" + youtube_base_url + "?" + ($.param(params));
       return $.get(url, function(data) {
-        return console.log(data.feed.entry);
+        var tracks, video, _i, _len, _ref;
+        tracks = [];
+        _ref = data.feed.entry;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          video = _ref[_i];
+          tracks.push({
+            uri: video.media$group.yt$videoid.$t,
+            duration: parseInt(video.media$group.yt$duration.seconds) * 1000,
+            title: video.title.$t,
+            source: 'youtube'
+          });
+        }
+        return console.log(tracks);
       });
     },
     searchSoundcloud: function(str) {
-      return SC.get('/tracks', {
+      return SC.get('/search', {
         q: str,
-        order: 'hotness',
-        filter: 'streamable'
-      }, function(tracks) {
+        facet: 'model',
+        limit: 15,
+        linked_partitioning: 1
+      }, function(songs) {
+        var song, tracks, _i, _len, _ref;
+        tracks = [];
+        _ref = songs.collection;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          song = _ref[_i];
+          if (song.kind === 'track' && song.streamable) {
+            tracks.push({
+              uri: song.uri,
+              duration: song.duration,
+              title: song.title,
+              artist: song.user.username,
+              source: 'soundcloud'
+            });
+          }
+        }
         return console.log(tracks);
       });
     },

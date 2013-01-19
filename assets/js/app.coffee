@@ -31,7 +31,7 @@ define (require, exports, module) ->
     $partyClient.empty().append clientView.$el
     clientView.render()
     searchView = new SearchView()
-    searchView.searchYoutube('two coins')
+    searchView.search('two coins')
 
   sampleSong =
     type: 'Spotify'
