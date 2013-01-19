@@ -64,12 +64,15 @@
       # data is {id: room_id, ...}
       console.log data
 
-      # get the party data
-      pdata = ""
+
       socket.party = data.id
       socket.join socket.party
+
       socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
-      socket.emit 'populate', 'SERVER', pdata
+
+      # get the party data
+      party = socket.party
+      socket.emit 'populate', 'SERVER', party
     )
 
     socket.on('createparty', (data) ->
@@ -87,7 +90,11 @@
       # data is {song}
       console.log data
 
-      io.sockets.in(socket.party).emit('playsong', 'SERVER', data)
+      party = Party.findById socket.party
+
+      party.
+
+      io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
     )
 
     socket.on('addsong', (data) ->
@@ -95,9 +102,17 @@
       # data is {id: room_id, type: media_type, uri: url/uri}
       console.log data
 
+      party = Party.findById socket.party
+
+      song = party.addSong
+        type: data.type
+        score: 0
+        uri: data.uri
+        timestamp: Date.now()
+
       # add the new song to the server
       # then send out the update to everyone
-      io.sockets.in(socket.party).emit('addsong', 'SERVER', data)
+      io.sockets.in(socket.party).emit 'addsong', 'SERVER', song
     )
 
     socket.on('vote', (data) ->
@@ -105,9 +120,16 @@
       # data is {id: room_id, uri: url/uri, vote: up/down}
       console.log data
 
+      party = Party.findById socket.party
+
+      song = if data.vote is 'up'
+        party.upvoteSong data.uri
+      else
+        party.downvoteSong data.uri
+
       # add the vote to the server
       # send out the update to everyone
-      io.sockets.in(socket.party).emit('vote', 'SERVER', data)
+      io.sockets.in(socket.party).emit 'vote', 'SERVER', song
     )
 
     socket.on('disconnect', () ->

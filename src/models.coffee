@@ -1,14 +1,15 @@
 (->
+  _ = require 'lodash'
   mongoose = require 'mongoose'
   mongoose.connect 'mongodb://localhost/party'
 
   Song =
-    type: String
-    score: Number
+    source: String
+    score:
+      type: Number
+      default: 1
     uri: String
-    timestamp:
-      type: Date
-      default: Date.now
+    timestamp: Date
 
   partySchema = mongoose.Schema
     name: String
@@ -19,23 +20,35 @@
 
   partySchema.index loc: "2d"
 
-  partySchema.methods.voteSong = (song, increment) ->
+  partySchema.methods.voteSong = (uri, increment) ->
+    song = null
     for s in this.songs
-      if s is song
+      if s.uri is uri
         s.score += increment
+        song = s
+    this.save()
+    song
 
-  partySchema.methods.upvoteSong = (song) ->
-    partySchema.methods.voteSong 1
+  partySchema.methods.upvoteSong = (uri) ->
+    partySchema.methods.voteSong uri, 1    
 
-  partySchema.methods.upvoteSong = (song) ->
-    partySchema.methods.voteSong -1
+  partySchema.methods.downvoteSong = (uri) ->
+    partySchema.methods.voteSong uri, -1
                 
   partySchema.methods.addSong = (song) ->
+    song.timestamp = Date.now()
     this.songs.push(song)
-    this.model('Party').save()
+    this.save()
+    song
 
   partySchema.methods.playNextSong = (song) ->
-    null
+    if this.songs.length isnt 0
+      # Pick highest scoring song
+      next = _.max this.songs, (song) -> song.score
+      this.songs = _.select this.songs, (song) -> song isnt next
+      this.playing = next
+      this.save()
+    this.playing
 
   module.exports.Party = mongoose.model('Party', partySchema)
 )()
