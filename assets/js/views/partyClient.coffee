@@ -1,16 +1,14 @@
 define (require, exports, module) ->
 
   $         = require 'jquery'
-  _         = require '/lib/js/lodash.js'
-  Backbone  = require '/lib/js/backbone.js'
+  _         = require 'underscore'
+  Backbone  = require 'backbone'
 
-  exports.partyClientView = _.extend Backbone.View
+  exports.partyClientView = Backbone.View.extend
     
     initialize: () ->
-      console.log 'client view init '
+      console.log 'client view init'
 
     render: () ->
-      this.$el.html(this.model.toJSON().toString())
+      this.$el.html(this.model.get 'name')
       return this
-
-  module.exports = server

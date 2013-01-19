@@ -3,21 +3,21 @@
 
   Party = require('./../models').Party
 
-  exports.createParty = (req,res) ->
+  exports.createParty = (req, res) ->
     res.render 'create_party',
       title: 'Join a party'
 
-  exports.partyAdmin = (req,res) ->
-    Party.findById req.params.id, (err,p) ->
+  exports.partyAdmin = (req, res) ->
+    Party.findById req.params.id, (err, p) ->
       if err
         res.send 404, "No such party found"
       else
         res.render 'party_admin',
-          title: 'Admin party'
+          title: 'Party admin'
           party: p
 
-  exports.party = (req,res) ->
-    Party.findById req.params.id, (err,p) ->
+  exports.party = (req, res) ->
+    Party.findById req.params.id, (err, p) ->
       if err
         res.send 404, "No such party found"
       else
@@ -25,7 +25,9 @@
           title: 'View party'
           party: p
 
-  exports.findParty = (req,res) ->
+  exports.findParties = (req, res) ->
+    console.log 'findParties! *****************************'
+    console.log req.params
     loc = [
       req.params.latitude
     , req.params.longitude
@@ -35,6 +37,7 @@
       $within:
         $center: [loc, 0.1]
 
-    res.send ps.toJSON()
+    # res.send ps
+    res.send []
 
 )()

@@ -1,12 +1,11 @@
 define(function(require, exports, module) {
   var $, Backbone, _;
+  _ = require('underscore');
   $ = require('jquery');
-  _ = require('/lib/js/lodash.js');
-  Backbone = require('/lib/js/backbone.js');
-  exports.partyClient = _.extend(Backbone.Model({
+  Backbone = require('backbone');
+  return exports.partyClient = Backbone.Model.extend({
     url: function() {
       return "/party/" + this.id + " ";
     }
-  }));
-  return module.exports = server;
+  });
 });

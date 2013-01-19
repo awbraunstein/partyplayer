@@ -2,7 +2,7 @@
   mongoose = require 'mongoose'
   mongoose.connect 'mongodb://localhost/party'
 
-  Song = 
+  Song =
     type: String
     score: Number
     uri: String
@@ -15,9 +15,7 @@
     loc: [Number]
     playing:
       type: Song
-      default: null
     songs: [Song]
-
 
   partySchema.index loc: "2d"
 
@@ -27,7 +25,7 @@
         s.score += increment
 
   partySchema.methods.upvoteSong = (song) ->
-    partySchema.methods.voteSong 1    
+    partySchema.methods.voteSong 1
 
   partySchema.methods.upvoteSong = (song) ->
     partySchema.methods.voteSong -1

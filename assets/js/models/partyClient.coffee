@@ -1,12 +1,10 @@
 define (require, exports, module) ->
 
+  _         = require 'underscore'
   $         = require 'jquery'
-  _         = require '/lib/js/lodash.js'
-  Backbone  = require '/lib/js/backbone.js'
+  Backbone  = require 'backbone'
 
-  exports.partyClient = _.extend Backbone.Model
+  exports.partyClient = Backbone.Model.extend
 
     url: () ->
       "/party/#{this.id} "
-
-  module.exports = server

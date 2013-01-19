@@ -1,16 +1,15 @@
 define(function(require, exports, module) {
   var $, Backbone, _;
   $ = require('jquery');
-  _ = require('/lib/js/lodash.js');
-  Backbone = require('/lib/js/backbone.js');
-  exports.partyClientView = _.extend(Backbone.View({
+  _ = require('underscore');
+  Backbone = require('backbone');
+  return exports.partyClientView = Backbone.View.extend({
     initialize: function() {
-      return console.log('client view init ');
+      return console.log('client view init');
     },
     render: function() {
-      this.$el.html(this.model.toJSON().toString());
+      this.$el.html(this.model.get('name'));
       return this;
     }
-  }));
-  return module.exports = server;
+  });
 });
