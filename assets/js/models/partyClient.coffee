@@ -7,6 +7,6 @@ define (require, exports, module) ->
   exports.partyClient = _.extend Backbone.Model
 
     url: () ->
-      "/party/#{this.id}"
+      "/party/#{this.id} "
 
   module.exports = server

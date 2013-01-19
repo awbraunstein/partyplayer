@@ -7,7 +7,7 @@ define (require, exports, module) ->
   exports.partyClientView = _.extend Backbone.View
     
     initialize: () ->
-      console.log 'client view init'
+      console.log 'client view init '
 
     render: () ->
       this.$el.html(this.model.toJSON().toString())

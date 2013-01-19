@@ -1,4 +1,5 @@
 fs            = require 'fs'
+path          = require 'path'
 {print}       = require 'util'
 which         = require('which')
 {spawn, exec} = require 'child_process'
@@ -84,13 +85,16 @@ task 'dev', 'start dev env', ->
   supervisor.stderr.pipe process.stderr
   log 'Watching js files and running server', green
   invoke 'watchAssets'
-  log 'Watching assets'
+  log 'Watching assets', green
 
 
 # Front end asset compilation
 appFiles = [
   'assets/js/app.coffee'
 ]
+
+isCoffee = (file, stats) ->
+  stats.isFile() and file.match(/\.coffee$/) and file not in appFiles
 
 task 'coffeeFiles', 'find coffee files', () ->
   traverseFileSystem = (currentPath) ->
@@ -99,43 +103,22 @@ task 'coffeeFiles', 'find coffee files', () ->
       do (file) ->
         currentFile = "#{currentPath}/#{file}"
         stats       = fs.statSync(currentFile)
-        if stats.isFile() and currentFile.indexOf('.coffee') > 1 and
-            appFiles.join('=').indexOf("#{currentFile}=") < 0
+        if isCoffee currentFile, stats
           appFiles.push currentFile
         else if stats.isDirectory()
           traverseFileSystem currentFile
 
   traverseFileSystem 'assets/js'
-  log "#{appFiles.length} coffee files found."
+  log "#{appFiles.length} coffee files found.", green
   return appFiles
 
 task 'watchAssets', 'Watch asset source files and build changes', () ->
-  invoke 'buildAssets'
+  invoke 'coffeeFiles'
   for file in appFiles then do (file) ->
     fs.watchFile file, (curr, prev) ->
       if +curr.mtime isnt +prev.mtime
-        log "Saw change in #{file}"
-        invoke 'buildAssets'
-
-task 'buildAssets', 'Build single application file from source files', ->
-  invoke 'coffeeFiles'
-  appContents = new Array remaining = appFiles.length
-  for file, index in appFiles then do (file, index) ->
-    fs.readFile file, 'utf8', (err, fileContents) ->
-      throw err if err
-      appContents[index] = fileContents
-      process(file) if --remaining is 0
-  process = (file) ->
-    log '\n--------'
-    log file
-    # fs.writeFile 'public/app.coffee', appContents.join('\n\n'), 'utf8', (err) ->
-    #   throw err if err
-    #   exec 'coffee --compile public/app.coffee', (err, stdout, stderr) ->
-    #     if err
-    #       log 'Error compiling coffee file.'
-    #     else
-    #       fs.unlink 'public/app.coffee', (err) ->
-    #         if err
-    #           log 'Couldn\'t delete the app.coffee file/'
-    #         log 'Done building coffee file.'
+        log "Saw change in #{file}", green
+        compiledPath = (path.dirname file).replace 'assets', 'public'
+        log "exec: coffee -b -o #{compiledPath} -c #{file}", red
+        exec "coffee -b -o #{compiledPath} -c #{file}"
 
