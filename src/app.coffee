@@ -38,15 +38,10 @@
     app.use express.errorHandler()
 
   # Routes
-<<<<<<< HEAD
-  app.get '/', router.static.index
-  
-=======
   app.get '/', router.party.createParty
   app.get '/a/:id', router.party.partyAdmin
   app.get '/:id', router.party.party
 
->>>>>>> 89a4d246000f5713ec62c3c5bbcd0630715d558e
   # Start Server
   app.listen PORT, ->
     console.log "Listening on #{PORT} in #{app.settings.env} mode"
@@ -76,7 +71,16 @@
       socket.join socket.party
       socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
     )
-    
+
+    socket.on('playsong'), (data) ->
+      # play a song by moving it into now playing
+      # and removing it from the playlist
+      # data is {song}
+      console.log data
+
+      io.sockets.in(socket.party).emit('playsong', 'SERVER', data)
+    )
+
     socket.on('addsong', (data) ->
       # add song to a party playlist
       # data is {id: room_id, type: media_type, uri: url/uri}
