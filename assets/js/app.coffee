@@ -18,7 +18,7 @@ define (require, exports, module) ->
   utils     = require 'utils'
   server    = require 'server'
 
-  PartyClient     = require 'models/partyClient'
+  Party           = require 'models/party'
   PartyClientView = require 'views/partyClient'
   SearchView      = require 'views/search'
 
@@ -26,7 +26,7 @@ define (require, exports, module) ->
     $partyClient = $('#party-client')
 
     clientView = new PartyClientView
-      model: new PartyClient(party)
+      model: new Party(party)
 
     $partyClient.empty().append clientView.$el
     clientView.render()
@@ -47,16 +47,16 @@ define (require, exports, module) ->
     songs: [sampleSong]
 
   init = () ->
-    if 'geolocation' of navigator
-      navigator.geolocation.getCurrentPosition (position) ->
-        console.log 'finding nearby parties...'
-        server.findParties position.coords, (parties) ->
-          console.log 'found parties...'
-          console.log parties
-          # TODO
-          initClient sampleParty
-    else
+    unless 'geolocation' of navigator
+      # TODO: better alert
       console.log 'not supported in browser'
+
+    navigator.geolocation.getCurrentPosition (position) ->
+      console.log 'finding nearby parties...'
+      server.findParties position.coords, (parties) ->
+        console.log parties
+        # TODO: use real data
+        $ -> initClient sampleParty
 
   console.log 'underscore...'
   console.log _
