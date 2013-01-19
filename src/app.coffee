@@ -37,7 +37,9 @@
     app.use express.errorHandler()
 
   # Routes
-  app.get '/', router.static.index
+  app.get '/', router.party.createParty
+  app.get '/a/:id', router.party.partyAdmin
+  app.get '/:id', router.party.party
 
   # Start Server
   app.listen PORT, ->
