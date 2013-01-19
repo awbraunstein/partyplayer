@@ -3,9 +3,17 @@
 
   Party = require('./../models').Party
 
+  exports.index = (req,res) ->
+    res.render 'index', title: 'Join a party'
+
   exports.createParty = (req, res) ->
-    res.render 'create_party',
-      title: 'Join a party'
+    p = new Party
+      name:   req.params.name
+      loc:    [req.params.latitude, req.params.longitude]
+      songs:  []
+    p.save (err, party) ->
+      if not err
+        res.send party
 
   exports.partyAdmin = (req, res) ->
     Party.findById req.params.id, (err, p) ->
@@ -26,11 +34,9 @@
           party: p
 
   exports.findParties = (req, res) ->
-    console.log 'findParties! *****************************'
-    console.log req.params
     loc = [
-      req.params.latitude
-    , req.params.longitude
+      req.body.latitude
+    , req.body.longitude
     ]
 
     ps = Party.find

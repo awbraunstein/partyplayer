@@ -5,8 +5,7 @@
 
   module.exports.Router =
     static: staticController
-    party: partyController
+    party:  partyController
 
 )()
-
 

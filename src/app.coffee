@@ -42,7 +42,7 @@
   # Routes
 
   # GET -> render pages
-  app.get '/',        router.party.createParty
+  app.get '/',        router.party.index
   app.get '/a/:id',   router.party.partyAdmin
   app.get '/:id',     router.party.party
 
