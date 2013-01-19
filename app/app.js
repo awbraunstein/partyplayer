@@ -38,7 +38,9 @@
   app.configure('production', function() {
     return app.use(express.errorHandler());
   });
-  app.get('/', router["static"].index);
+  app.get('/', router.party.createParty);
+  app.get('/a/:id', router.party.partyAdmin);
+  app.get('/:id', router.party.party);
   app.listen(PORT, function() {
     return console.log("Listening on " + PORT + " in " + app.settings.env + " mode");
   });

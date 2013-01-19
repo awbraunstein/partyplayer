@@ -17,6 +17,7 @@
   , "which": "latest"
   , "coffee-script": "latest"
   , "mongoose": "latest"
+  , "lodash": "latest"
   }
 , "scripts": {
     "start": "node server.js"
