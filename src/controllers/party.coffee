@@ -20,4 +20,9 @@
       else
         res.render('party', party: p)
 
+  exports.findParty (req,res) ->
+    loc = [req.params.latitude,req.params.longitude]
+    ps = Party.find $within: { $center: [loc,0.1] }
+    res.send ps.toJSON()
+
 )()
