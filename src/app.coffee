@@ -10,6 +10,7 @@
   router  = require('./router').Router
   app     = module.exports = express()
 
+  # --------------------------------------------------------------------------
   # Configuration
   app.configure ->
     app.set 'views', "#{DIRNAME}/views"
@@ -37,17 +38,25 @@
   app.configure 'production', ->
     app.use express.errorHandler()
 
+  # --------------------------------------------------------------------------
   # Routes
-  app.get '/',      router.party.createParty
-  app.get '/a/:id', router.party.partyAdmin
-  app.get '/:id',   router.party.party
 
+  # GET -> render pages
+  app.get '/',        router.party.createParty
+  app.get '/a/:id',   router.party.partyAdmin
+  app.get '/:id',     router.party.party
+
+  # POST -> request data
+  app.post '/nearby',  router.party.findParties
+
+  # --------------------------------------------------------------------------
   # Start Server
   app.listen PORT, ->
     console.log "Listening on #{PORT} in #{app.settings.env} mode"
 
-  # Socket stuff
 
+  # --------------------------------------------------------------------------
+  # Socket stuff
   io.sockets.on('connection', (socket) ->
 
     socket.on('joinparty', (data) ->
@@ -71,7 +80,16 @@
       socket.join socket.party
       socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
     )
-    
+
+    socket.on('playsong', (data) ->
+      # play a song by moving it into now playing
+      # and removing it from the playlist
+      # data is {song}
+      console.log data
+
+      io.sockets.in(socket.party).emit('playsong', 'SERVER', data)
+    )
+
     socket.on('addsong', (data) ->
       # add song to a party playlist
       # data is {id: room_id, type: media_type, uri: url/uri}
@@ -90,6 +108,10 @@
       # add the vote to the server
       # send out the update to everyone
       io.sockets.in(socket.party).emit('vote', 'SERVER', data)
+    )
+
+    socket.on('disconnect', () ->
+      socket.leave socket.room
     )
   )
 

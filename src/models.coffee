@@ -16,7 +16,10 @@
     loc: [Number]
     playing:
       type: Song
+<<<<<<< HEAD
       default: {}
+=======
+>>>>>>> a3711837a5cd5dd8754ebf9f6a39a13a9fe69629
     songs: [Song]
 
   partySchema.index loc: "2d"
@@ -28,7 +31,7 @@
     this.save()
 
   partySchema.methods.upvoteSong = (song) ->
-    partySchema.methods.voteSong 1    
+    partySchema.methods.voteSong 1
 
   partySchema.methods.upvoteSong = (song) ->
     partySchema.methods.voteSong -1
