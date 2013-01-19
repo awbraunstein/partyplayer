@@ -1,13 +1,13 @@
 define (require, exports, module) ->
 
-  _  = require '/lib/js/lodash.js'
+  _  = require 'underscore'
   $  = require 'jquery'
 
   server =
 
     findParties: (coordinates, callback) ->
       console.log coordinates
-      $.post '/find_parties',
+      $.post '/nearby',
         latitude: coordinates.latitude
         longitude: coordinates.longitude
       , callback

@@ -41,6 +41,7 @@
   app.get('/', router.party.createParty);
   app.get('/a/:id', router.party.partyAdmin);
   app.get('/:id', router.party.party);
+  app.post('/nearby', router.party.findParties);
   app.listen(PORT, function() {
     return console.log("Listening on " + PORT + " in " + app.settings.env + " mode");
   });

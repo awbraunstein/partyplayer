@@ -2,7 +2,7 @@
   mongoose = require 'mongoose'
   mongoose.connect 'mongodb://localhost/party'
 
-  Song = 
+  Song =
     type: String
     score: Number
     uri: String
@@ -15,9 +15,7 @@
     loc: [Number]
     playing:
       type: Song
-      default: null
     songs: [Song]
-
 
   partySchema.index loc: "2d"
 
@@ -40,7 +38,6 @@
     for s in this.songs
       if s.uri is song.uri
         return s
-    
 
   partySchema.methods.playNextSong = (uri) ->
     null

@@ -17,8 +17,7 @@
     name: String,
     loc: [Number],
     playing: {
-      type: Song,
-      "default": null
+      type: Song
     },
     songs: [Song]
   });
