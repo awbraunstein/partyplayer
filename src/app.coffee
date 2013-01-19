@@ -38,9 +38,9 @@
     app.use express.errorHandler()
 
   # Routes
-  app.get '/', router.party.createParty
+  app.get '/',      router.party.createParty
   app.get '/a/:id', router.party.partyAdmin
-  app.get '/:id', router.party.party
+  app.get '/:id',   router.party.party
 
   # Start Server
   app.listen PORT, ->
@@ -91,7 +91,7 @@
       # send out the update to everyone
       io.sockets.in(socket.party).emit('vote', 'SERVER', data)
     )
-    
   )
+
   return null
 )()
