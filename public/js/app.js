@@ -12,7 +12,7 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, Party, PartyClientView, init, initClient, sampleParty, sampleSong, server, utils, _;
+  var $, Backbone, Party, PartyClientView, SearchView, init, initClient, sampleParty, sampleSong, server, utils, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
@@ -20,14 +20,17 @@ define(function(require, exports, module) {
   server = require('server');
   Party = require('models/party');
   PartyClientView = require('views/partyClient');
+  SearchView = require('views/search');
   initClient = function(party) {
-    var $partyClient, clientView;
+    var $partyClient, clientView, searchView;
     $partyClient = $('#party-client');
     clientView = new PartyClientView({
       model: new PartyClient(party)
     });
     $partyClient.empty().append(clientView.$el);
-    return clientView.render();
+    clientView.render();
+    searchView = new SearchView();
+    return searchView.searchYoutube('two coins');
   };
   sampleSong = {
     type: 'Spotify',
