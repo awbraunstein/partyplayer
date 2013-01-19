@@ -35,7 +35,10 @@ define(function(require, exports, module) {
     $partyClient.empty().append(clientView.$el);
     clientView.render();
     searchView = new SearchView();
-    return searchView.searchYoutube('two coins');
+    return searchView.search('Trey anastasio', function(source, results) {
+      console.log(source);
+      return console.log(results);
+    });
   };
   sampleSong = {
     type: 'Spotify',

@@ -11,7 +11,12 @@ define(function(require, exports, module) {
         client_id: '0bc80f756a59625ed11e9791f107004a'
       });
     },
-    searchYoutube: function(str) {
+    search: function(str, callback) {
+      this.searchYoutube(str, callback);
+      this.searchSoundcloud(str, callback);
+      return this.searchSpotify(str, callback);
+    },
+    searchYoutube: function(str, callback) {
       var params, url, youtube_base_url;
       youtube_base_url = 'https://gdata.youtube.com/feeds/api/videos';
       params = {
@@ -24,19 +29,47 @@ define(function(require, exports, module) {
       };
       url = "" + youtube_base_url + "?" + ($.param(params));
       return $.get(url, function(data) {
-        return console.log(data.feed.entry);
+        var tracks, video, _i, _len, _ref;
+        tracks = [];
+        _ref = data.feed.entry;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          video = _ref[_i];
+          tracks.push({
+            uri: video.media$group.yt$videoid.$t,
+            duration: parseInt(video.media$group.yt$duration.seconds) * 1000,
+            title: video.title.$t,
+            source: 'youtube'
+          });
+        }
+        return callback('youtube', tracks);
       });
     },
-    searchSoundcloud: function(str) {
-      return SC.get('/tracks', {
+    searchSoundcloud: function(str, callback) {
+      return SC.get('/search', {
         q: str,
-        order: 'hotness',
-        filter: 'streamable'
-      }, function(tracks) {
-        return console.log(tracks);
+        facet: 'model',
+        limit: 15,
+        linked_partitioning: 1
+      }, function(songs) {
+        var song, tracks, _i, _len, _ref;
+        tracks = [];
+        _ref = songs.collection;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          song = _ref[_i];
+          if (song.kind === 'track' && song.streamable) {
+            tracks.push({
+              uri: song.uri,
+              duration: song.duration,
+              title: song.title,
+              artist: song.user.username,
+              source: 'soundcloud'
+            });
+          }
+        }
+        return callback('soundcloud', tracks);
       });
     },
-    searchSpotify: function(str) {
+    searchSpotify: function(str, callback) {
       var params, spotify_base_url, url;
       spotify_base_url = 'http://ws.spotify.com/search/1/track';
       params = {
@@ -44,7 +77,7 @@ define(function(require, exports, module) {
       };
       url = "" + spotify_base_url + ".json?" + ($.param(params));
       return $.get(url, function(data) {
-        return console.log(data);
+        return callback('spotify', data);
       });
     },
     render: function() {

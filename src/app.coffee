@@ -42,9 +42,9 @@
   # Routes
 
   # GET -> render pages
-  app.get '/',        router.party.index
-  app.get '/a/:id',   router.party.partyAdmin
-  app.get '/:id',     router.party.party
+  # app.get '/',        router.party.index
+  # app.get '/a/:id',   router.party.partyAdmin
+  # app.get '/:id',     router.party.party
 
   # POST -> request data
   app.post '/nearby',  router.party.findParties
