@@ -1,13 +1,17 @@
 define (require, exports, module) ->
 
-  $         = require 'jquery'
-  _         = require 'underscore'
-  Backbone  = require 'backbone'
+  $          = require 'jquery'
+  _          = require 'underscore'
+  Backbone   = require 'backbone'
+  
+  require '/lib/js/soundcloud.js'
 
   exports.search = Backbone.View.extend
-    
+
     initialize: () ->
       console.log 'created search view'
+      SC.initialize
+        client_id: '0bc80f756a59625ed11e9791f107004a'
 
     searchYoutube: (str) ->
       # search youtube with the given string
@@ -20,10 +24,15 @@ define (require, exports, module) ->
         v: 2
         'max-results': 10
       url = "#{youtube_base_url}?#{$.param params}"
-      $.get url, (data) -> console.log data
+      $.get url, (data) -> console.log data.feed.entry
 
     searchSoundcloud: (str) ->
       # Search soundcloud with the given string
+      SC.get '/tracks',
+        q: str
+        order: 'hotness'
+        filter: 'streamable'
+      , (tracks) -> console.log tracks
 
     searchSpotify: (str) ->
       # Search spotify with the given string
@@ -31,7 +40,7 @@ define (require, exports, module) ->
       params =
         q: str
       url = "#{spotify_base_url}.json?#{$.param params}"
-      $.get url, (data) -> console.log data
+      $.get url, (data) -> console.log data    
 
     render: () ->
       this.$el.html(this.model.get 'name')
