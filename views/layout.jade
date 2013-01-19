@@ -1,0 +1,27 @@
+!!!
+html
+  head
+    title= title
+    meta(charset='utf-8')
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta('http-equiv'='X-UA-Compatible', content='IE=edge,chrome=1')
+    link(rel='shortcut icon', href='/img/favicon.png')
+
+    //- Stylesheets
+    != css('app')
+    block stylesheets
+
+  body
+    block content
+
+  //- Scripts
+  //if lt ie 8
+    script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+  script('data-main'='/js/app.js', src='/lib/js/require-jquery.js')
+  != js('app')
+  != js('utils')
+  //- ALL REQUIRED CLIENT SIDE JS MODULES SHOULD BE INCLUDED HERE
+
+  block scripts
+
