@@ -26,7 +26,7 @@ define (require, exports, module) ->
     $partyClient = $('#party-client')
 
     clientView = new PartyClientView
-      model: new PartyClient(party)
+      model: new Party(party)
 
     $partyClient.empty().append clientView.$el
     clientView.render()
