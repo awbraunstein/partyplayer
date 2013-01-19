@@ -4,7 +4,7 @@ define (require, exports, module) ->
   $         = require 'jquery'
   Backbone  = require 'backbone'
 
-  exports.partyClient = Backbone.Model.extend
+  exports.party = Backbone.Model.extend
 
     url: () ->
       "/party/#{this.id} "

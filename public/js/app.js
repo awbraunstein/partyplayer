@@ -12,13 +12,13 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, PartyClient, PartyClientView, init, initClient, sampleParty, sampleSong, server, utils, _;
+  var $, Backbone, Party, PartyClientView, init, initClient, sampleParty, sampleSong, server, utils, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
   utils = require('utils');
   server = require('server');
-  PartyClient = require('models/partyClient');
+  Party = require('models/party');
   PartyClientView = require('views/partyClient');
   initClient = function(party) {
     var $partyClient, clientView;
@@ -42,18 +42,18 @@ define(function(require, exports, module) {
     songs: [sampleSong]
   };
   init = function() {
-    if ('geolocation' in navigator) {
-      return navigator.geolocation.getCurrentPosition(function(position) {
-        console.log('finding nearby parties...');
-        return server.findParties(position.coords, function(parties) {
-          console.log('found parties...');
-          console.log(parties);
+    if (!('geolocation' in navigator)) {
+      console.log('not supported in browser');
+    }
+    return navigator.geolocation.getCurrentPosition(function(position) {
+      console.log('finding nearby parties...');
+      return server.findParties(position.coords, function(parties) {
+        console.log(parties);
+        return $(function() {
           return initClient(sampleParty);
         });
       });
-    } else {
-      return console.log('not supported in browser');
-    }
+    });
   };
   console.log('underscore...');
   console.log(_);
