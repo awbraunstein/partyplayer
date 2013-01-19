@@ -7,10 +7,9 @@
     res.render 'index', title: 'Join a party'
 
   exports.createParty = (req, res) ->
-    name, lat, lng = req.params.name, req.params.latitude, req.params.longitude
     p = new Party
-      name:   name
-      loc:    [lat, lng]
+      name:   req.params.name
+      loc:    [req.params.latitude, req.params.longitude]
       songs:  []
     p.save (err, party) ->
       if not err
