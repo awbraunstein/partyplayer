@@ -6,6 +6,7 @@
   # Module dependencies and app init
   express = require 'express'
   assets  = require 'connect-assets'
+  io      = require('socket.io').listen app
   router  = require('./router').Router
   app     = module.exports = express()
 
@@ -37,13 +38,65 @@
     app.use express.errorHandler()
 
   # Routes
+<<<<<<< HEAD
+  app.get '/', router.static.index
+  
+=======
   app.get '/', router.party.createParty
   app.get '/a/:id', router.party.partyAdmin
   app.get '/:id', router.party.party
 
+>>>>>>> 89a4d246000f5713ec62c3c5bbcd0630715d558e
   # Start Server
   app.listen PORT, ->
     console.log "Listening on #{PORT} in #{app.settings.env} mode"
 
+  # Socket stuff
+
+  io.sockets.on('connection', (socket) ->
+
+    socket.on('joinparty', (data) ->
+      # join a party as a guest
+      # data is {id: room_id, ...}
+      console.log data
+
+      # get the party data
+      pdata = ""
+      socket.party = data.id
+      socket.join socket.party
+      socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
+      socket.emit 'populate', 'SERVER', pdata
+    )
+
+    socket.on('createparty', (data) ->
+      # create a new party
+      console.log data
+
+      socket.party = data.id
+      socket.join socket.party
+      socket.emit 'joined', 'SERVER', "you have joined the #{socket.party} party."
+    )
+    
+    socket.on('addsong', (data) ->
+      # add song to a party playlist
+      # data is {id: room_id, type: media_type, uri: url/uri}
+      console.log data
+
+      # add the new song to the server
+      # then send out the update to everyone
+      io.sockets.in(socket.party).emit('addsong', 'SERVER', data)
+    )
+
+    socket.on('vote', (data) ->
+      # Vote for a uri in a party
+      # data is {id: room_id, uri: url/uri, vote: up/down}
+      console.log data
+
+      # add the vote to the server
+      # send out the update to everyone
+      io.sockets.in(socket.party).emit('vote', 'SERVER', data)
+    )
+    
+  )
   return null
 )()
