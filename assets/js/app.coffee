@@ -6,6 +6,9 @@ requirejs.config
     backbone:   '/lib/js/backbone'
     handlebars: '/lib/js/handlebars'
   shim:
+    underscore:
+      deps: []
+      exports: '_'
     backbone:
       deps: ['underscore', 'jquery']
       exports: 'Backbone'

@@ -28,6 +28,7 @@ define(function(require, exports, module) {
       if (query === '') {
         return;
       }
+      this('#search-results').empty();
       this.searchView.search(query, function(source, results) {
         var res, _i, _len, _results;
         _results = [];

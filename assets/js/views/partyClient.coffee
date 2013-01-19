@@ -27,10 +27,10 @@ define (require, exports, module) ->
 
     autoCompleteSearch: (e) ->
       query = @$('#search').val()
-
       if query is ''
         return
 
+      @('#search-results').empty()
       @searchView.search query, (source, results) ->
         for res in results
           @$('#search-results').append res.title
