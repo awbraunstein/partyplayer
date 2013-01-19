@@ -13,12 +13,12 @@ define(function(require, exports, module) {
         client_id: '0bc80f756a59625ed11e9791f107004a'
       });
     },
-    search: function(str) {
-      this.searchYoutube(str);
-      this.searchSoundcloud(str);
-      return this.searchSpotify(str);
+    search: function(str, callback) {
+      this.searchYoutube(str, callback);
+      this.searchSoundcloud(str, callback);
+      return this.searchSpotify(str, callback);
     },
-    searchYoutube: function(str) {
+    searchYoutube: function(str, callback) {
       var params, url, youtube_base_url;
       youtube_base_url = 'https://gdata.youtube.com/feeds/api/videos';
       params = {
@@ -43,10 +43,10 @@ define(function(require, exports, module) {
             source: 'youtube'
           });
         }
-        return console.log(tracks);
+        return callback('youtube', tracks);
       });
     },
-    searchSoundcloud: function(str) {
+    searchSoundcloud: function(str, callback) {
       return SC.get('/search', {
         q: str,
         facet: 'model',
@@ -68,10 +68,10 @@ define(function(require, exports, module) {
             });
           }
         }
-        return console.log(tracks);
+        return callback('soundcloud', tracks);
       });
     },
-    searchSpotify: function(str) {
+    searchSpotify: function(str, callback) {
       var params, spotify_base_url, url;
       spotify_base_url = 'http://ws.spotify.com/search/1/track';
       params = {
@@ -79,7 +79,7 @@ define(function(require, exports, module) {
       };
       url = "" + spotify_base_url + ".json?" + ($.param(params));
       return $.get(url, function(data) {
-        return console.log(data);
+        return callback('spotify', data);
       });
     },
     render: function() {

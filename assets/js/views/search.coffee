@@ -13,12 +13,13 @@ define (require, exports, module) ->
       SC.initialize
         client_id: '0bc80f756a59625ed11e9791f107004a'
 
-    search: (str) ->
-      @searchYoutube str
-      @searchSoundcloud str
-      @searchSpotify str
+    search: (str, callback) ->
+      # callback has arguments provider and results
+      @searchYoutube str, callback
+      @searchSoundcloud str, callback
+      @searchSpotify str, callback
 
-    searchYoutube: (str) ->
+    searchYoutube: (str, callback) ->
       # search youtube with the given string
       youtube_base_url = 'https://gdata.youtube.com/feeds/api/videos'
       params =
@@ -37,9 +38,9 @@ define (require, exports, module) ->
             duration: parseInt(video.media$group.yt$duration.seconds) * 1000
             title: video.title.$t
             source: 'youtube'
-        console.log tracks
+        callback('youtube', tracks)
 
-    searchSoundcloud: (str) ->
+    searchSoundcloud: (str, callback) ->
       # Search soundcloud with the given string
       SC.get '/search',
         q: str
@@ -55,15 +56,16 @@ define (require, exports, module) ->
             title: song.title
             artist: song.user.username
             source: 'soundcloud'
-        console.log tracks
+        callback('soundcloud', tracks)
 
-    searchSpotify: (str) ->
+    searchSpotify: (str, callback) ->
       # Search spotify with the given string
       spotify_base_url = 'http://ws.spotify.com/search/1/track'
       params =
         q: str
       url = "#{spotify_base_url}.json?#{$.param params}"
-      $.get url, (data) -> console.log data    
+      $.get url, (data) ->
+        callback('spotify', data)
 
     render: () ->
       this.$el.html(this.model.get 'name')

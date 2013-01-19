@@ -31,7 +31,9 @@ define (require, exports, module) ->
     $partyClient.empty().append clientView.$el
     clientView.render()
     searchView = new SearchView()
-    searchView.search('two coins')
+    searchView.search 'Trey anastasio', (source, results) ->
+      console.log source
+      console.log results
 
   sampleSong =
     type: 'Spotify'
