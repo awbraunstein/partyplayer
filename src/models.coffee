@@ -30,10 +30,10 @@
     song
 
   partySchema.methods.upvoteSong = (uri) ->
-    partySchema.methods.voteSong 1    
+    partySchema.methods.voteSong uri, 1    
 
   partySchema.methods.downvoteSong = (uri) ->
-    partySchema.methods.voteSong -1
+    partySchema.methods.voteSong uri, -1
                 
   partySchema.methods.addSong = (song) ->
     song.timestamp = Date.now()
