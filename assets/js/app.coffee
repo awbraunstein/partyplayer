@@ -20,6 +20,7 @@ define (require, exports, module) ->
 
   PartyClient     = require 'models/partyClient'
   PartyClientView = require 'views/partyClient'
+  SearchView      = require 'views/search'
 
   initClient = (party) ->
     $partyClient = $('#party-client')
@@ -29,6 +30,8 @@ define (require, exports, module) ->
 
     $partyClient.empty().append clientView.$el
     clientView.render()
+    searchView = new SearchView()
+    searchView.searchYoutube('two coins')
 
   sampleSong =
     type: 'Spotify'
