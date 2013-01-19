@@ -5,7 +5,7 @@ define (require, exports, module) ->
   Backbone  = require '/lib/js/backbone.js'
 
   exports.partyClient = _.extend Backbone.Model
-    
+
     url: () ->
       "/party/#{this.id}"
 

@@ -38,15 +38,10 @@
     app.use express.errorHandler()
 
   # Routes
-<<<<<<< HEAD
-  app.get '/', router.static.index
-  
-=======
-  app.get '/', router.party.createParty
+  app.get '/',      router.party.createParty
   app.get '/a/:id', router.party.partyAdmin
-  app.get '/:id', router.party.party
+  app.get '/:id',   router.party.party
 
->>>>>>> 89a4d246000f5713ec62c3c5bbcd0630715d558e
   # Start Server
   app.listen PORT, ->
     console.log "Listening on #{PORT} in #{app.settings.env} mode"
@@ -96,7 +91,7 @@
       # send out the update to everyone
       io.sockets.in(socket.party).emit('vote', 'SERVER', data)
     )
-    
   )
+
   return null
 )()
