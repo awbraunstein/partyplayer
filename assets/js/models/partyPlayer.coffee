@@ -26,6 +26,7 @@ define (require, exports, module) ->
     nextSong: () ->
       # Pick next top rated song and play it
       next = _.max(this.get("songs"), (s) -> s.score)
+      this.get("played").push(this.get("playing"))
       this.set("songs", _.select(this.get("songs"), (song) -> song isnt next))
       this.set("playing", next)
 

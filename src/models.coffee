@@ -52,6 +52,7 @@
   partySchema.methods.playNextSong = (uri) ->
     nextSong = _.find(this.songs, (s) -> s.uri is uri)
     newSongs = _.reject(this.songs, (s) -> s.uri is uri)
+    this.played.push(this.playing)
     this.songs = newSongs
     this.playing = nextSong
     this.save()
