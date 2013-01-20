@@ -21,8 +21,9 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, PARTY_NAME_REGEX, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPlayer, sampleParty, sampleSong, sampleSong2, server, utils, _;
+  var $, Backbone, NEW_PARTY_REGEX, PARTY_NAME_REGEX, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPartyForm, initPlayer, server, utils, _;
   PARTY_NAME_REGEX = /party\/(.+)/;
+  NEW_PARTY_REGEX = /\/new$/;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
@@ -52,25 +53,10 @@ define(function(require, exports, module) {
     $partyPlayer.empty().append(playerView.$el);
     return playerView.render();
   };
-  sampleSong = {
-    source: 'Youtube',
-    score: 4,
-    uri: 'KlujizeNNQM',
-    duration: 5000,
-    timestamp: Date.now()
-  };
-  sampleSong2 = {
-    source: 'Soundcloud',
-    score: 3,
-    uri: '/tracks/297',
-    duration: 399151,
-    timestamp: Date.now()
-  };
-  sampleParty = {
-    name: 'rad party',
-    loc: [39, -75],
-    playing: sampleSong,
-    songs: [sampleSong, sampleSong2]
+  initPartyForm = function(position) {
+    $('input[name=latitude]').val(position.coords.latitude);
+    $('input[name=longitude]').val(position.coords.longitude);
+    return null;
   };
   init = function() {
     var matched;
@@ -89,6 +75,12 @@ define(function(require, exports, module) {
     }
     return navigator.geolocation.getCurrentPosition(function(position) {
       console.log('finding nearby parties...');
+      if (window.location.pathname.match(NEW_PARTY_REGEX)) {
+        $(function() {
+          return initPartyForm(position);
+        });
+        return;
+      }
       return server.findParties(position.coords, function(parties) {
         if (parties != null) {
           return $(function() {

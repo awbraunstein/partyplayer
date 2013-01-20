@@ -2,7 +2,13 @@ extends layout
 
 block content
   #main.container
-    h1 partyplayer.io
-    #party-form
-      h3 Start a party
+    .row
+      form#party-form.span8(action='/create', method='post')
+        img(src='/img/logo.png')
+        // h1 Start a party
+        input(type='text', name='name', placeholder='Create a room', autofocus='true')
+        input(type='hidden', name='latitude')
+        input(type='hidden', name='longitude')
+        input(type='submit', style='display: none')
+        button.btn(type='submit', value='')
 
