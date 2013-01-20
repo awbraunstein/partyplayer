@@ -67,21 +67,25 @@
       loc: [ 39.9516968, -75.1909739 ]
     newParty.save (err) ->
       console.log err
+
     newParty.addSong
-      source: 'spotify'
-      uri: 'http://open.spotify.com/track/29ufIwomYfLbWBxPMdaUZm'
-      score: 0
-      duration: 326000
-    newParty.addSong
-      source: 'Youtube'
+      source: 'youtube'
       score: 3
       uri: 'KlujizeNNQM'
       duration: 5000
       timestamp:
         Date.now()
+        
+    newParty.addSong
+      title:"Corinna"
+      artist:"Phish"
+      duration: 274000
+      score: 2
+      uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
+      source: 'spotify'
 
     newParty.addSong
-      source: 'Soundcloud'
+      source: 'soundcloud'
       score: 4
       uri: '/tracks/297'
       duration: 399151

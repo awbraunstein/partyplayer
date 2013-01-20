@@ -38,12 +38,6 @@ define (require, exports, module) ->
     loadSpotifySong: (uri) ->
       console.log uri
       @render 'spotify-uri': uri
-
-    testSong:
-      title:"Corinna"
-      artist:"Phish"
-      duration: 274000
-      uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
       
     playNext: () ->
       if this.model.hasSongs()
@@ -53,19 +47,19 @@ define (require, exports, module) ->
         player.stopVideo()
         next = this.model.nextSong()
         switch next.source
-          when "Soundcloud"
+          when "soundcloud"
             SC.stream next.uri, (sound) =>
               this.sound = sound
               this.playId = setTimeout(this.playNext, next.duration)
               sound.play()
-          when "Youtube"
+          when "youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
             player.loadVideoById(next.uri, 0, "default")
             player.playVideo()
             this.playId = setTimeout(this.playNext, next.duration)
-          when "Spotify"
-            loadSpotifySong next.uri
+          when "spotify"
+            @loadSpotifySong next.uri
             btn = @$('iframe').contents().find('.play-pause-btn')
             btn.click()
             this.playID = setTimeout(this.playNext, next.duration)
@@ -74,27 +68,27 @@ define (require, exports, module) ->
     pause: () ->
       clearTimeout(this.playId)
       switch this.model.get("playing").source
-        when "Soundcloud"
+        when "soundcloud"
           # Soundcloud uses soundManager for streaming, see
           # http://www.schillmania.com/projects/soundmanager2/doc/
           this.sound.pause()
-        when "Youtube"
+        when "youtube"
           player.pauseVideo()
-        when "Spotify"
+        when "spotify"
           btn = @$('iframe').contents().find('.play-pause-btn')
           btn.click()
           
     resume: () ->
       if this.model.get("playing")
         switch this.model.get("playing").source
-          when "Soundcloud"
+          when "soundcloud"
             this.playId = setTimeout(this.playNext, this.sound.duration - this.sound.position)
             this.sound.play()
-          when "Youtube"
+          when "youtube"
             this.playId = setTimeout this.playNext,
               (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
-          when "Spotify"
+          when "spotify"
             btn = @$('iframe').contents().find('.play-pause-btn')
             elapsedTimeString = @$('iframe').contents().find('.time-spent').contents()
             [minutes, seconds] = elapsedTimeString.split(':')
@@ -104,7 +98,6 @@ define (require, exports, module) ->
             btn.click()
 
     play: () ->
-      debugger
       if this.model.get("playing")
         this.resume()
       else
