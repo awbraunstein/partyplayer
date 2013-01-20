@@ -5,16 +5,16 @@ define (require, exports, module) ->
   Backbone  = require 'backbone'
   utils     = require 'utils'
 
-  Track       = require 'models/track'
+  # Track       = require 'models/track'
   SearchView  = require 'views/search'
-  TrackView   = require 'views/track'
+  # TrackView   = require 'views/track'
 
   exports.partyClientView = Backbone.View.extend
 
     template: 'mobileClient'
 
     events:
-      'keypress #search': 'autoCompleteSearch'
+      'keyup #search': 'autoCompleteDebounce'
 
     initialize: () ->
       console.log 'client view init'
@@ -25,6 +25,9 @@ define (require, exports, module) ->
       html = utils.tmpl @template, @model.toJSON()
       @$el.html html
       return this
+
+    autoCompleteDebounce: (e) ->
+      _.debounce @autoCompleteSearch(e), 300
 
     autoCompleteSearch: (e) ->
       $results = @$('#search-results')
@@ -38,11 +41,11 @@ define (require, exports, module) ->
       @searchView.search query, (source, results) ->
         for res in results
           # Create a new track model and view, including the current partyID
-          trackView = new TrackView
-            model: new Track _.extend res,
-              partyID: partyID
+          # trackView = new TrackView
+          #   model: new Track _.extend res,
+          #     partyID: partyID
 
-          $results.append trackView.$el
-          trackView.render()
-
+          $results.append res
+          # $results.append trackView.$el
+          # trackView.render()
       return null

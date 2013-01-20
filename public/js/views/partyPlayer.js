@@ -18,7 +18,8 @@ define(function(require, exports, module) {
       return console.log('player view init');
     },
     playNext: function() {
-      var next;
+      var next,
+        _this = this;
       console.log(this.model.get("songs"));
       if (this.model.get("songs").length !== 0) {
         if (this.sound) {
@@ -33,11 +34,11 @@ define(function(require, exports, module) {
         this.playing = next;
         switch (next.source) {
           case "Soundcloud":
-            return SC.stream(next.uri, __bind(function(sound) {
-              this.sound = sound;
-              this.playId = setTimeout(next.duration, this.playNext);
+            return SC.stream(next.uri, function(sound) {
+              _this.sound = sound;
+              _this.playId = setTimeout(next.duration, _this.playNext);
               return sound.play();
-            }, this));
+            });
           case "Youtube":
             player.loadVideoById(next.uri, 0, "default");
             player.playVideo();
