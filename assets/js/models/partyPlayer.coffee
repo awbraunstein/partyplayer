@@ -44,7 +44,8 @@ define (require, exports, module) ->
     # Pick next top rated song and play it
     nextSong: () ->
       songs = @get('songs')
-      next = songs.max (s) -> s.score
+      next = songs.max (s) -> s.get('score')
+      console.log next
       @get("played").push @get("playing")
       @set("songs", songs.select, (song) -> song isnt next)
       @set("playing", next)
