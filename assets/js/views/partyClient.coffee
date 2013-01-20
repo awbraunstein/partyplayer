@@ -77,9 +77,14 @@ define (require, exports, module) ->
     requestTrack: (e) ->
       e.preventDefault()
       $el     = $(e.currentTarget)
-      @model.sendNewRequest
+      t =
         source: $el.attr 'data-source'
         uri:    $el.attr 'data-uri'
         title:  $el.attr 'data-title'
-        artist: $el.attr 'data-title'
+        artist: $el.attr 'data-artist'
+        score:  0
+        album_art: $el.attr 'data-art'
+      @model.sendNewRequest t
+      html = utils.tmpl 'trackItem', t
+      @$(TRACK_LIST_SELECTOR).append html
       @clearSearch()
