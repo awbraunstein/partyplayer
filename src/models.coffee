@@ -43,6 +43,7 @@
                 
   partySchema.methods.addSong = (song) ->
     song.timestamp = Date.now()
+    song.score = 0
     this.songs.push(song)
     this.save()
     song

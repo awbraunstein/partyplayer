@@ -45,10 +45,11 @@ define(function(require, exports, module) {
       });
     },
     render: function() {
-      var data, html;
+      var data, html, prev;
       data = this.model.toJSON();
-      if (this.model.get('played')) {
-        data.previous = this.model.get('played').last().toJSON();
+      prev = this.model.get('played').last();
+      if (prev) {
+        data.previous = prev.toJSON();
       }
       if (this.model.get('playing')) {
         data.playing = this.model.get('playing').toJSON();

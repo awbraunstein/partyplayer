@@ -135,8 +135,7 @@
       # data is {id: room_id, type: media_type, uri: url/uri, ...}
       console.log data
       models.Party.findById socket.party, (err, party) ->
-        song = party.addSong _.extend data,
-          score: 0
+        song = party.addSong data
 
         # add the new song to the server
         # then send out the update to everyone

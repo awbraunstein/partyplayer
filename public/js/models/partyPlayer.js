@@ -21,6 +21,11 @@ define(function(require, exports, module) {
       this.set('playing', track);
       this.set('played', played);
       this.set('songs', songs);
+      this.on('change:songs', __bind(function(data) {
+        if (_.isArray(this.get('songs'))) {
+          return this.set('songs', new TrackList(this.get('songs')));
+        }
+      }, this));
       console.log("currently playing " + (track.get('title')) + "...");
       return this.initSocketActions();
     },
@@ -39,40 +44,26 @@ define(function(require, exports, module) {
       return this.socket.on('addsong', __bind(function(song) {
         console.log('******* got new request ********');
         console.log(song);
-        return this.get('songs').push(new Track(song));
+        return this.get('songs').add(new Track(song));
       }, this));
     },
-    hasSongs: function() {
-      return this.get('songs').length !== 0;
-    },
-    nextSong: function() {
+    getNextSong: function() {
       var next, songs;
       songs = this.get('songs');
       if (!songs) {
-        alert('no songs to play!');
-        return;
+        return null;
       }
-      if (_.isArray(songs)) {
-        next = _.max(songs, function(s) {
-          return s.get('score');
-        });
-        this.get("played").push(this.get("playing"));
-        this.set("songs", _.select(songs, function(song) {
-          return song !== next;
-        }));
-        this.set("playing", next);
-      } else {
-        next = songs.max(function(s) {
-          return s.get('score');
-        });
-        this.get("played").push(this.get("playing"));
-        this.set("songs", songs.select(function(song) {
-          return song !== next;
-        }));
-        this.set("playing", next);
+      next = songs.max(function(s) {
+        return s.get('score');
+      });
+      if (this.get('playing')) {
+        this.get('played').push(this.get('playing'));
       }
-      console.log(next);
+      this.set('playing', next);
+      this.get('songs').remove(next);
       this.socket.emit('playsong', next.attributes);
+      console.log('***** playing next... *****');
+      console.log(next);
       return next;
     },
     sendNewRequest: function(track) {

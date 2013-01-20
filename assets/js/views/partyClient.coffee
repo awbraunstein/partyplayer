@@ -41,8 +41,9 @@ define (require, exports, module) ->
 
     render: () ->
       data = @model.toJSON()
-      if @model.get('played')
-        data.previous = @model.get('played').last().toJSON()
+      prev = @model.get('played').last()
+      if prev
+        data.previous = prev.toJSON()
       if @model.get('playing')
         data.playing = @model.get('playing').toJSON()
 

@@ -25,6 +25,10 @@ define (require, exports, module) ->
       @set 'played', played
       @set 'songs', songs
 
+      @on 'change:songs', (data) =>
+        if _.isArray(@get('songs'))
+          @set 'songs', new TrackList @get('songs')
+
       console.log "currently playing #{track.get 'title'}..."
       @initSocketActions()
 
@@ -32,7 +36,7 @@ define (require, exports, module) ->
     initSocketActions: () ->
       @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
       @socket.emit 'createparty', id: @id
-      
+
       @socket.on 'vote', (song) =>
         @get('songs').each (s) ->
           s.set('score', song.score) if s.get('uri') is song.uri
@@ -40,30 +44,26 @@ define (require, exports, module) ->
       @socket.on 'addsong', (song) =>
         console.log '******* got new request ********'
         console.log song
-        this.get('songs').push(new Track(song))
+        @get('songs').add(new Track(song))
 
-    hasSongs: () ->
-      this.get('songs').length isnt 0
+    # Pick next top rated song and play it, also broadcast on sockets
+    getNextSong: () ->
+      songs = @get 'songs'
+      return null unless songs
 
-    # Pick next top rated song and play it
-    nextSong: () ->
-      songs = @get('songs')
-      unless songs
-        alert 'no songs to play!'
-        return
-      if _.isArray songs
-        next = _.max(songs, (s) -> s.get('score'))
-        @get("played").push @get("playing")
-        @set("songs", _.select(songs, (song) -> song isnt next))
-        @set("playing", next)
-      else
-        next = songs.max (s) -> s.get('score')
-        @get("played").push @get("playing")
-        @set("songs", songs.select (song) -> song isnt next)
-        @set("playing", next)
+      next = songs.max (s) -> s.get('score')
 
+      # update played and playing
+      if @get 'playing'
+        @get('played').push @get('playing')
+      @set('playing', next)
+
+      # update request queue
+      @get('songs').remove(next)
+
+      @socket.emit 'playsong', next.attributes
+      console.log '***** playing next... *****'
       console.log next
-      @socket.emit('playsong', next.attributes)
       next
 
     # Send a song request to the server

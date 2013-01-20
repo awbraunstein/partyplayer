@@ -34,7 +34,7 @@ define(function(require, exports, module) {
       this.model.get('songs').on('change:score', __bind(function() {
         return this.onScoreChange();
       }, this));
-      this.model.get('songs').on('add', __bind(function() {
+      this.model.get('songs').on('change', __bind(function() {
         return this.renderTrackList();
       }, this));
       return this.model.get('playing').on('change', __bind(function() {
@@ -52,30 +52,32 @@ define(function(require, exports, module) {
       return swfobject.embedSWF(YT_URL, "youtube", "425", "356", "8", null, null, params, attrs);
     },
     playNext: function() {
-      var next;
-      if (this.model.hasSongs()) {
-        if (this.sound) {
-          this.sound.stop();
-        }
-        player.stopVideo();
-        next = this.model.nextSong();
-        switch (next.get('source')) {
-          case "soundcloud":
-            return SC.stream(next.get('uri'), __bind(function(sound) {
-              this.sound = sound;
-              this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
-              return sound.play();
-            }, this));
-          case "youtube":
-            player.loadVideoById(next.get('uri'), 0, "small");
-            player.playVideo();
-            return this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
-        }
+      var duration, next, uri;
+      next = this.model.getNextSong();
+      if (!_.isObject(next)) {
+        alert('No songs to play!');
+        return;
+      }
+      if (this.sound) {
+        this.sound.stop();
+      }
+      player.stopVideo();
+      uri = next.get('uri');
+      duration = next.get('duration');
+      switch (next.get('source')) {
+        case 'soundcloud':
+          return SC.stream(uri, __bind(function(sound) {
+            this.sound = sound;
+            return this.sound.play();
+          }, this));
+        case 'youtube':
+          player.loadVideoById(uri, 0, "small");
+          return player.playVideo();
       }
     },
     pause: function() {
       clearTimeout(this.playId);
-      switch (this.model.get("playing").get('source')) {
+      switch (this.model.get('playing').get('source')) {
         case "soundcloud":
           return this.sound.pause();
         case "youtube":
@@ -86,10 +88,8 @@ define(function(require, exports, module) {
       if (this.model.get("playing")) {
         switch (this.model.get("playing").get('source')) {
           case "soundcloud":
-            this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position);
             return this.sound.play();
           case "youtube":
-            this.playId = setTimeout(_.bind(this.playNext, this), (player.getDuration() - player.getCurrentTime()) * 1000);
             return player.playVideo();
         }
       }
@@ -116,10 +116,10 @@ define(function(require, exports, module) {
       }
     },
     onScoreChange: function(song) {
-      this.model.get('songs').sort();
-      return this.renderTrackList();
+      return this.model.get('songs').sort();
     },
     renderTrackList: function() {
+      debugger;
       var $list;
       $list = this.$(TRACK_LIST_SELECTOR);
       $list.empty();

@@ -38,7 +38,7 @@ define (require, exports, module) ->
 
       @searchModel = new Search()
       @model.get('songs').on 'change:score', () => @onScoreChange()
-      @model.get('songs').on 'add', () => @renderTrackList()
+      @model.get('songs').on 'change', () => @renderTrackList()
       @model.get('playing').on 'change', () => @render()
 
     initializeYoutube: () ->
@@ -48,29 +48,35 @@ define (require, exports, module) ->
         null, null, params, attrs
 
     playNext: () ->
-      
-      if this.model.hasSongs()
-        # Stop all existing music
-        if this.sound
-          this.sound.stop()
-        player.stopVideo()
-        next = this.model.nextSong()
-        switch next.get('source')
-          when "soundcloud"
-            SC.stream next.get('uri'), (sound) =>
-              this.sound = sound
-              this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
-              sound.play()
-          when "youtube"
-            # Assuming we have a player object, which should come from some
-            # embedded swf in a hidden div
-            player.loadVideoById(next.get('uri'), 0, "small")
-            player.playVideo()
-            this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
-            
+      next = @model.getNextSong()
+      unless _.isObject(next)
+        alert 'No songs to play!'
+        return
+
+      # Stop all existing music / video
+      if @sound
+        @sound.stop()
+      player.stopVideo()
+
+      uri       = next.get 'uri'
+      duration  = next.get 'duration'
+
+      switch next.get 'source'
+        when 'soundcloud'
+          SC.stream uri, (sound) =>
+            @sound = sound
+            @sound.play()
+        when 'youtube'
+          # Assuming we have a player object, which should come from some
+          # embedded swf in a hidden div
+          player.loadVideoById(uri, 0, "small")
+          player.playVideo()
+
+      # @playId = setTimeout(_.bind(@playNext, this), duration)
+
     pause: () ->
-      clearTimeout(this.playId)
-      switch this.model.get("playing").get('source')
+      clearTimeout @playId
+      switch @model.get('playing').get('source')
         when "soundcloud"
           # Soundcloud uses soundManager for streaming, see
           # http://www.schillmania.com/projects/soundmanager2/doc/
@@ -82,11 +88,11 @@ define (require, exports, module) ->
       if this.model.get("playing")
         switch this.model.get("playing").get('source')
           when "soundcloud"
-            this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
+            # this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
             this.sound.play()
           when "youtube"
-            this.playId = setTimeout _.bind(this.playNext, this),
-              (player.getDuration() - player.getCurrentTime()) * 1000
+            # this.playId = setTimeout _.bind(this.playNext, this),
+            #   (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
 
     play: () ->
@@ -96,8 +102,7 @@ define (require, exports, module) ->
         this.playNext()
 
     next: () ->
-      if this.playId
-        clearTimeout(this.playId)
+      clearTimeout(this.playId) if this.playId
       this.playNext()
 
     # Time elapsed, in milliseconds
@@ -110,9 +115,10 @@ define (require, exports, module) ->
 
     onScoreChange: (song) ->
       @model.get('songs').sort()
-      @renderTrackList()
+      # @renderTrackList()
 
     renderTrackList: () ->
+      debugger
       $list = @$(TRACK_LIST_SELECTOR)
       $list.empty()
 
