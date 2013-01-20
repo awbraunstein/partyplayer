@@ -47,13 +47,13 @@ define(function(require, exports, module) {
           case "Soundcloud":
             return SC.stream(next.uri, function(sound) {
               _this.sound = sound;
-              _this.playId = setTimeout(_this.playNext, next.duration);
+              _this.playId = setTimeout(_.bind(_this.playNext, _this), next.duration);
               return sound.play();
             });
           case "Youtube":
             player.loadVideoById(next.uri, 0, "default");
             player.playVideo();
-            return this.playId = setTimeout(this.playNext, next.duration);
+            return this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
           case "Spotify":
             return null;
         }
@@ -74,10 +74,10 @@ define(function(require, exports, module) {
       if (this.model.get("playing")) {
         switch (this.model.get("playing").source) {
           case "Soundcloud":
-            this.playId = setTimeout(this.playNext, this.sound.duration - this.sound.position);
+            this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position);
             return this.sound.play();
           case "Youtube":
-            this.playId = setTimeout(this.playNext, (player.getDuration() - player.getCurrentTime()) * 1000);
+            this.playId = setTimeout(_.bind(this.playNext, this), (player.getDuration() - player.getCurrentTime()) * 1000);
             return player.playVideo();
           case "Spotify":
             return null;

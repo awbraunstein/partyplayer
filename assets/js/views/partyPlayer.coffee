@@ -5,7 +5,7 @@ define (require, exports, module) ->
   Backbone  = require 'backbone'
 
   require '/lib/js/soundcloud.js'
-  require '/lib/js/swfobject.js'  
+  require '/lib/js/swfobject.js'
 
   SC.initialize client_id: '0bc80f756a59625ed11e9791f107004a'
 
@@ -43,14 +43,14 @@ define (require, exports, module) ->
           when "Soundcloud"
             SC.stream next.uri, (sound) =>
               this.sound = sound
-              this.playId = setTimeout(this.playNext, next.duration)
+              this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
               sound.play()
           when "Youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
             player.loadVideoById(next.uri, 0, "default")
             player.playVideo()
-            this.playId = setTimeout(this.playNext, next.duration)
+            this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
           when "Spotify"
             null
             
@@ -70,10 +70,10 @@ define (require, exports, module) ->
       if this.model.get("playing")
         switch this.model.get("playing").source
           when "Soundcloud"
-            this.playId = setTimeout(this.playNext, this.sound.duration - this.sound.position)
+            this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
             this.sound.play()
           when "Youtube"
-            this.playId = setTimeout this.playNext,
+            this.playId = setTimeout _.bind(this.playNext, this),
               (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
           when "Spotify"
