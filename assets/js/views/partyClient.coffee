@@ -71,6 +71,9 @@ define (require, exports, module) ->
             $results.append html
       return null
 
+    clearSearch: (e) ->
+      @$(SEARCH_RESULT_SELECTOR).empty()      
+
     requestTrack: (e) ->
       e.preventDefault()
       $el     = $(e.currentTarget)
@@ -79,4 +82,4 @@ define (require, exports, module) ->
         uri:    $el.attr 'data-uri'
         title:  $el.attr 'data-title'
         artist: $el.attr 'data-title'
-
+      @clearSearch()

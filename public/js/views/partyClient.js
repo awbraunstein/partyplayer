@@ -82,16 +82,20 @@ define(function(require, exports, module) {
       });
       return null;
     },
+    clearSearch: function(e) {
+      return this.$(SEARCH_RESULT_SELECTOR).empty();
+    },
     requestTrack: function(e) {
       var $el;
       e.preventDefault();
       $el = $(e.currentTarget);
-      return this.model.sendNewRequest({
+      this.model.sendNewRequest({
         source: $el.attr('data-source'),
         uri: $el.attr('data-uri'),
         title: $el.attr('data-title'),
         artist: $el.attr('data-title')
       });
+      return this.clearSearch();
     }
   });
 });
