@@ -87,6 +87,14 @@ define (require, exports, module) ->
         clearTimeout(this.playId)
       this.playNext()
 
+    # Time elapsed, in milliseconds
+    progess: () ->
+      switch this.model.get("playing").source
+        when "soundcloud"
+          this.sound.position
+        when "youtube"
+          player.getCurrentTime() * 1000
+        
     render: (data) ->
       d = data || {}
       html = utils.tmpl @template, d

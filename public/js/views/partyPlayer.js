@@ -93,6 +93,14 @@ define(function(require, exports, module) {
       }
       return this.playNext();
     },
+    progess: function() {
+      switch (this.model.get("playing").source) {
+        case "soundcloud":
+          return this.sound.position;
+        case "youtube":
+          return player.getCurrentTime() * 1000;
+      }
+    },
     render: function(data) {
       var d, html;
       d = data || {};
