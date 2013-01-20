@@ -6,6 +6,8 @@
 
   Song =
     source: String
+    artist: String
+    title: String
     score:
       type: Number
       default: 1
@@ -19,6 +21,7 @@
     playing:
       type: Song
     songs: [Song]
+    played: [Song]
 
   partySchema.index
     loc: "2d"
@@ -49,6 +52,7 @@
       # Pick highest scoring song
       next = _.max this.songs, (song) -> song.score
       this.songs = _.select this.songs, (song) -> song isnt next
+      this.played.push(this.playing)
       this.playing = next
       this.save()
     this.playing

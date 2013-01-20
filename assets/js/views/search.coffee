@@ -68,5 +68,5 @@ define (require, exports, module) ->
         callback('spotify', data)
 
     render: () ->
-      this.$el.html(this.model.get 'name')
+      # this.$el.html(this.model.get 'name')
       return this

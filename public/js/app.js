@@ -21,14 +21,16 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, PartyClient, PartyClientView, init, initClient, server, utils, _;
+  var $, Backbone, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPlayer, sampleParty, sampleSong, sampleSong2, server, utils, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
   utils = require('utils');
   server = require('server');
   PartyClient = require('models/partyClient');
+  PartyPlayer = require('models/partyPlayer');
   PartyClientView = require('views/partyClient');
+  PartyPlayerView = require('views/partyPlayer');
   initClient = function(party) {
     var $partyClient, clientView;
     $partyClient = $('#party-client');
@@ -38,7 +40,42 @@ define(function(require, exports, module) {
     $partyClient.empty().append(clientView.$el);
     return clientView.render();
   };
+  initPlayer = function(party) {
+    var $partyPlayer, playerView;
+    $partyPlayer = $('#party-player');
+    playerView = new PartyPlayerView({
+      model: new PartyPlayer(party)
+    });
+    $partyPlayer.empty().append(playerView.$el);
+    return playerView.render();
+  };
+  sampleSong = {
+    source: 'Soundcloud',
+    score: 4,
+    uri: '/tracks/297',
+    duration: 399151,
+    timestamp: Date.now()
+  };
+  sampleSong2 = {
+    source: 'Soundcloud',
+    score: 3,
+    uri: '/tracks/296',
+    duration: 422556,
+    timestamp: Date.now()
+  };
+  sampleParty = {
+    name: 'rad party',
+    loc: [39, -75],
+    playing: sampleSong,
+    songs: [sampleSong, sampleSong2]
+  };
   init = function() {
+    if (window.PDATA) {
+      $(function() {
+        return initPlayer(window.PDATA.party);
+      });
+      return;
+    }
     if (!('geolocation' in navigator)) {
       console.log('not supported in browser');
     }
@@ -56,8 +93,5 @@ define(function(require, exports, module) {
     });
   };
   init();
-  $(function() {
-    return console.log('DOM ready');
-  });
   return null;
 });
