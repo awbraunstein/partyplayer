@@ -3,6 +3,7 @@ define (require, exports, module) ->
   _         = require 'underscore'
   $         = require 'jquery'
   Backbone  = require 'backbone'
+  io        = require '/lib/js/socket.io.js'
 
   SOCKET_PORT = 8080
 
