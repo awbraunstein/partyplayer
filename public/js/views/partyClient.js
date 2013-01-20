@@ -19,8 +19,12 @@ define(function(require, exports, module) {
       'click .search-result': 'requestTrack'
     },
     initialize: function() {
+      var _this = this;
       this.searchView = new SearchView();
-      return this.model.get('songs').on('change:score', this.onScoreChange);
+      this.model.get('songs').on('change:score', this.onScoreChange);
+      return this.model.get('songs').on('add', function() {
+        return _this.renderTrackList();
+      });
     },
     renderTrackList: function() {
       var $list;
@@ -44,10 +48,10 @@ define(function(require, exports, module) {
     },
     onScoreChange: function(song) {
       this.model.get('songs').sort();
-      return this.renderTrackList;
+      return this.renderTrackList();
     },
     autoCompleteDebounce: function(e) {
-      if (e.keyCode >= 65 && e.keyCode <= 90) {
+      if ((e.keyCode >= 65 && e.keyCode <= 90) || e.keyCode === 8) {
         return _.debounce(this.autoCompleteSearch(e), 500);
       }
     },
@@ -61,12 +65,13 @@ define(function(require, exports, module) {
       }
       $results.empty();
       this.searchView.search(query, function(source, results) {
-        var res, _i, _len, _results;
+        var html, res, _i, _len, _results;
         _results = [];
         for (_i = 0, _len = results.length; _i < _len; _i++) {
           res = results[_i];
           if (_.isObject(res)) {
-            _results.push($results.append("<a class='search-result' data-uri='" + res.uri + "'                              data-source='" + res.source + "' href='#'>                              " + res.title + " - " + res.artist + "                            </a>"));
+            html = utils.tmpl('searchResult', res);
+            _results.push($results.append(html));
           } else {
             _results.push(void 0);
           }
@@ -76,12 +81,15 @@ define(function(require, exports, module) {
       return null;
     },
     requestTrack: function(e) {
-      var $el, source, uri;
+      var $el;
       e.preventDefault();
       $el = $(e.currentTarget);
-      source = $el.attr('data-source');
-      uri = $el.attr('data-uri');
-      return this.model.sendNewRequest(source, uri);
+      return this.model.sendNewRequest({
+        source: $el.attr('data-source'),
+        uri: $el.attr('data-uri'),
+        title: $el.attr('data-title'),
+        artist: $el.attr('data-title')
+      });
     }
   });
 });

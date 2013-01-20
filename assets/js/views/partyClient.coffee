@@ -24,6 +24,7 @@ define (require, exports, module) ->
     initialize: () ->
       @searchView = new SearchView()
       @model.get('songs').on 'change:score', @onScoreChange
+      @model.get('songs').on 'add', () => @renderTrackList()
 
     renderTrackList: () ->
       $list = @$(TRACK_LIST_SELECTOR)
@@ -43,11 +44,11 @@ define (require, exports, module) ->
 
     onScoreChange: (song) ->
       @model.get('songs').sort()
-      @renderTrackList
+      @renderTrackList()
 
     autoCompleteDebounce: (e) ->
-      # Check if key up was a letter
-      if e.keyCode >= 65 and e.keyCode <= 90
+      # Check if key up was a letter or backspace
+      if (e.keyCode >= 65 and e.keyCode <= 90) or e.keyCode == 8
         _.debounce @autoCompleteSearch(e), 500
 
     autoCompleteSearch: (e) ->
@@ -65,15 +66,16 @@ define (require, exports, module) ->
         # we use raw strings here instead.
         for res in results
           if _.isObject res
-            $results.append "<a class='search-result' data-uri='#{res.uri}'
-                              data-source='#{res.source}' href='#'>
-                              #{res.title} - #{res.artist}
-                            </a>"
+            html = utils.tmpl 'searchResult', res
+            $results.append html
       return null
 
     requestTrack: (e) ->
       e.preventDefault()
       $el     = $(e.currentTarget)
-      source  = $el.attr 'data-source'
-      uri     = $el.attr 'data-uri'
-      @model.sendNewRequest source, uri
+      @model.sendNewRequest
+        source: $el.attr 'data-source'
+        uri:    $el.attr 'data-uri'
+        title:  $el.attr 'data-title'
+        artist: $el.attr 'data-title'
+

@@ -10,6 +10,7 @@ define (require, exports, module) ->
     mobileClient: require 'text!templates/mobile-client.handlebars'
     trackItem:    require 'text!templates/track-item.handlebars'
     partyPlayer:  require 'text!templates/player.handlebars'
+    searchResult: require 'text!templates/search-result.handlebars'
 
   # Compile the templates!
   for id, source of templates
