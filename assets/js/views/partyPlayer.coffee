@@ -35,10 +35,6 @@ define (require, exports, module) ->
       swfobject.embedSWF YT_URL, "youtube", "425", "356", "8",
         null, null, params, attrs
 
-    loadSpotifySong: (uri) ->
-      console.log uri
-      @render 'spotify-uri': uri
-      
     playNext: () ->
       if this.model.hasSongs()
         # Stop all existing music
@@ -58,11 +54,6 @@ define (require, exports, module) ->
             player.loadVideoById(next.uri, 0, "default")
             player.playVideo()
             this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
-          when "spotify"
-            @loadSpotifySong next.uri
-            btn = @$('iframe').contents().find('.play-pause-btn')
-            btn.click()
-            this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
             
     pause: () ->
       clearTimeout(this.playId)
@@ -73,9 +64,6 @@ define (require, exports, module) ->
           this.sound.pause()
         when "youtube"
           player.pauseVideo()
-        when "spotify"
-          btn = @$('iframe').contents().find('.play-pause-btn')
-          btn.click()
           
     resume: () ->
       if this.model.get("playing")
@@ -87,14 +75,6 @@ define (require, exports, module) ->
             this.playId = setTimeout _.bind(this.playNext, this),
               (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
-          when "spotify"
-            btn = @$('iframe').contents().find('.play-pause-btn')
-            elapsedTimeString = @$('iframe').contents().find('.time-spent').contents()
-            [minutes, seconds] = elapsedTimeString.split(':')
-            elapsedTime = ((parseInt(minutes) * 60) + parseInt(seconds)) * 1000
-            remainingTime = this.model.get('playing').duration - elapsedTime
-            this.playId = setTimeout _bind(this.playNext, this), remainingTime
-            btn.click()
 
     play: () ->
       if this.model.get("playing")
