@@ -47,7 +47,7 @@ define (require, exports, module) ->
         # Find the song with the given uri among the 'songs' collection
         nextTrack = @get('songs').find (song) ->
           song.get 'uri' == next.uri
-        @played.push (@get 'playing')
+        @get('played').push (@get 'playing')
         @set 'playing', nextTrack
         @get('songs').remove nextTrack
 

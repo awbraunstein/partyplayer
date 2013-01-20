@@ -6,6 +6,7 @@
 
   # Libraries
   express = require 'express'
+  _       = require 'lodash'
   assets  = require 'connect-assets'
   app     = express()
   server  = require('http').createServer app
@@ -133,8 +134,8 @@
       # add song to a party playlist
       # data is {id: room_id, type: media_type, uri: url/uri, ...}
       console.log data
-
       models.Party.findById socket.party, (err, party) ->
+        console.log _
         song = party.addSong _.extend data,
           score: 0
 
