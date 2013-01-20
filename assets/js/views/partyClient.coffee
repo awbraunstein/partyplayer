@@ -20,10 +20,11 @@ define (require, exports, module) ->
     events:
       'keyup #search': 'autoCompleteDebounce'
       'click .search-result': 'requestTrack'
+      'click .vote': 'vote'
 
     initialize: () ->
       @searchView = new SearchView()
-      @model.get('songs').on 'change:score', @onScoreChange
+      @model.get('songs').on 'change:score', () => @onScoreChange()
       @model.get('songs').on 'add', () => @renderTrackList()
       @model.get('playing').on 'change', () => @render()
 
@@ -90,3 +91,10 @@ define (require, exports, module) ->
       html = utils.tmpl 'trackItem', t
       # @$(TRACK_LIST_SELECTOR).append html
       @clearSearch()
+
+    vote: (e) ->
+      $vote = @$(e.target).closest('.track-item').one()
+      if not $vote.hasClass('active')
+        uri = $vote.attr 'data-uri'
+        @model.voteSong uri, 'up'
+        $vote.addClass 'active'

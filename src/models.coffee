@@ -29,20 +29,17 @@
   partySchema.index
     loc: "2d"
 
-  partySchema.methods.voteSong = (uri, increment) ->
-    song = null
-    for s in this.songs
-      if s.uri is uri
-        s.score += increment
-        song = s
+  partySchema.methods.upvoteSong = (uri) ->
+    song = _.find(this.songs, (s) -> s.uri is uri)
+    song.score += 1
     this.save()
     song
 
-  partySchema.methods.upvoteSong = (uri) ->
-    partySchema.methods.voteSong uri, 1
-
   partySchema.methods.downvoteSong = (uri) ->
-    partySchema.methods.voteSong uri, -1
+    song = _.find(this.songs, (s) -> s.uri is uri)
+    song.score -= 1
+    this.save()
+    song
                 
   partySchema.methods.addSong = (song) ->
     song.timestamp = Date.now()
