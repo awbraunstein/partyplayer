@@ -143,10 +143,11 @@
 
       models.Party.findById socket.party, (err, party) ->
         song = party.addSong
-          type: data.type
+          source: data.source
           score: 0
           uri: data.uri
-          timestamp: Date.now()
+          title: data.title
+          artist: data.artist
 
         # add the new song to the server
         # then send out the update to everyone
