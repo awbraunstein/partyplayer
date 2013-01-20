@@ -76,7 +76,7 @@ define(function(require, exports, module) {
     },
     pause: function() {
       clearTimeout(this.playId);
-      switch (this.model.get("playing").source) {
+      switch (this.model.get("playing").get('source')) {
         case "soundcloud":
           return this.sound.pause();
         case "youtube":
@@ -85,7 +85,7 @@ define(function(require, exports, module) {
     },
     resume: function() {
       if (this.model.get("playing")) {
-        switch (this.model.get("playing").source) {
+        switch (this.model.get("playing").get('source')) {
           case "soundcloud":
             this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position);
             return this.sound.play();

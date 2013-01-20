@@ -68,7 +68,7 @@ define (require, exports, module) ->
             
     pause: () ->
       clearTimeout(this.playId)
-      switch this.model.get("playing").source
+      switch this.model.get("playing").get('source')
         when "soundcloud"
           # Soundcloud uses soundManager for streaming, see
           # http://www.schillmania.com/projects/soundmanager2/doc/
@@ -78,7 +78,7 @@ define (require, exports, module) ->
           
     resume: () ->
       if this.model.get("playing")
-        switch this.model.get("playing").source
+        switch this.model.get("playing").get('source')
           when "soundcloud"
             this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
             this.sound.play()

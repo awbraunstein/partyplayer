@@ -34,7 +34,7 @@ define(function(require, exports, module) {
       return this.socket.on('addsong', function(song) {
         console.log('******* got new request ********');
         console.log(song);
-        return _this.get('songs').push(song);
+        return _this.get('songs').push(new Track(song));
       });
     },
     hasSongs: function() {
@@ -48,9 +48,9 @@ define(function(require, exports, module) {
       });
       console.log(next);
       this.get("played").push(this.get("playing"));
-      this.set("songs", songs.select, function(song) {
+      this.set("songs", songs.select(function(song) {
         return song !== next;
-      });
+      }));
       this.set("playing", next);
       this.socket.emit('playsong', next);
       return next;
