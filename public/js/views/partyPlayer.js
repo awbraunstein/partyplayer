@@ -53,7 +53,7 @@ define(function(require, exports, module) {
               return sound.play();
             });
           case "youtube":
-            player.loadVideoById(next.uri, 0, "default");
+            player.loadVideoById(next.uri, 0, "small");
             player.playVideo();
             return this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
         }
