@@ -1,14 +1,19 @@
 # Entry point for server-side javascript app
 (->
-  DIRNAME = process.cwd()
-  PORT    = process.env.PORT or process.env.VMC_APP_PORT or 3000
+  DIRNAME     = process.cwd()
+  PORT        = process.env.PORT or process.env.VMC_APP_PORT or 3000
+  SOCKET_PORT = 8080
 
-  # Module dependencies and app init
+  # Libraries
   express = require 'express'
   assets  = require 'connect-assets'
-  io      = require('socket.io').listen app
+  app     = express()
+  server  = require('http').createServer app
+  io      = require('socket.io').listen server
+
+  # Modules
   router  = require('./router').Router
-  app     = module.exports = express()
+  models  = require './models'
 
   # --------------------------------------------------------------------------
   # Configuration
@@ -54,9 +59,26 @@
   app.listen PORT, ->
     console.log "Listening on #{PORT} in #{app.settings.env} mode"
 
+  # Fake data
+  generateParty = () ->
+    newParty = new models.Party
+      name: 'party.io'
+      loc: [ 39.9516968, -75.1909739 ]
+    newParty.save (err) ->
+      console.log err
+    newParty.addSong
+      source: 'spotify'
+      uri: 'http://open.spotify.com/track/29ufIwomYfLbWBxPMdaUZm'
+      score: 0
+      duration: 326000
+    newParty.playNextSong()
+
+  # generateParty()
 
   # --------------------------------------------------------------------------
   # Socket stuff
+  server.listen SOCKET_PORT
+
   io.sockets.on('connection', (socket) ->
 
     socket.on('joinparty', (data) ->

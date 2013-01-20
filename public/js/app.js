@@ -21,36 +21,22 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, Party, PartyClientView, init, initClient, sampleParty, sampleSong, server, utils, _;
+  var $, Backbone, PartyClient, PartyClientView, init, initClient, server, utils, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
   utils = require('utils');
   server = require('server');
-  Party = require('models/party');
+  PartyClient = require('models/partyClient');
   PartyClientView = require('views/partyClient');
   initClient = function(party) {
     var $partyClient, clientView;
     $partyClient = $('#party-client');
     clientView = new PartyClientView({
-      model: new Party(party)
+      model: new PartyClient(party)
     });
     $partyClient.empty().append(clientView.$el);
     return clientView.render();
-  };
-  sampleSong = {
-    type: 'Spotify',
-    score: 4,
-    uri: 'http://open.spotify.com/track/31yCrPeqVYke01Un3jPVWk',
-    title: 'Alligator',
-    artist: 'The Babies',
-    timestamp: Date.now
-  };
-  sampleParty = {
-    name: 'rad party',
-    loc: [39, -75],
-    playing: sampleSong,
-    requests: [sampleSong]
   };
   init = function() {
     if (!('geolocation' in navigator)) {
@@ -59,10 +45,13 @@ define(function(require, exports, module) {
     return navigator.geolocation.getCurrentPosition(function(position) {
       console.log('finding nearby parties...');
       return server.findParties(position.coords, function(parties) {
-        console.log(parties);
-        return $(function() {
-          return initClient(sampleParty);
-        });
+        if (parties != null) {
+          return $(function() {
+            return initClient(parties[0]);
+          });
+        } else {
+          return console.log('No parties!');
+        }
       });
     });
   };

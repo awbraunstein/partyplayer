@@ -25,31 +25,17 @@ define (require, exports, module) ->
   utils     = require 'utils'
   server    = require 'server'
 
-  Party           = require 'models/party'
+  PartyClient     = require 'models/partyClient'
   PartyClientView = require 'views/partyClient'
 
   initClient = (party) ->
     $partyClient = $('#party-client')
 
     clientView = new PartyClientView
-      model: new Party(party)
+      model: new PartyClient(party)
 
     $partyClient.empty().append clientView.$el
     clientView.render()
-
-  sampleSong =
-    type: 'Spotify'
-    score: 4
-    uri: 'http://open.spotify.com/track/31yCrPeqVYke01Un3jPVWk'
-    title: 'Alligator'
-    artist: 'The Babies'
-    timestamp: Date.now
-
-  sampleParty =
-    name: 'rad party'
-    loc: [39, -75]
-    playing: sampleSong
-    requests: [sampleSong]
 
   init = () ->
     unless 'geolocation' of navigator
@@ -59,9 +45,11 @@ define (require, exports, module) ->
     navigator.geolocation.getCurrentPosition (position) ->
       console.log 'finding nearby parties...'
       server.findParties position.coords, (parties) ->
-        console.log parties
-        # TODO: use real data
-        $ -> initClient sampleParty
+        # TODO: select party
+        if parties?
+          $ -> initClient parties[0]
+        else
+          console.log 'No parties!'
 
   init()
 

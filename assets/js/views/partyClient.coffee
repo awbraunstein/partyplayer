@@ -5,8 +5,9 @@ define (require, exports, module) ->
   Backbone  = require 'backbone'
   utils     = require 'utils'
 
+  Track       = require 'models/track'
   SearchView  = require 'views/search'
-  ResultView  = require 'views/result'
+  TrackView   = require 'views/track'
 
   exports.partyClientView = Backbone.View.extend
 
@@ -26,13 +27,22 @@ define (require, exports, module) ->
       return this
 
     autoCompleteSearch: (e) ->
+      $results = @$('#search-results')
+      partyID  = @model.get 'id'
+
       query = @$('#search').val()
       if query is ''
         return
 
-      @('#search-results').empty()
+      $results.empty()
       @searchView.search query, (source, results) ->
         for res in results
-          @$('#search-results').append res.title
+          # Create a new track model and view, including the current partyID
+          trackView = new TrackView
+            model: new Track _.extend res,
+              partyID: partyID
+
+          $results.append trackView.$el
+          trackView.render()
 
       return null

@@ -40,8 +40,8 @@
     ]
 
     Party.find
-      $within:
-        $center: [loc, 0.1]
+      loc:
+        $near: loc
     , (err, ps) ->
       if err
         res.send []
