@@ -49,14 +49,12 @@
     this.save()
     song
 
-  partySchema.methods.playNextSong = () ->
-    if this.songs.length isnt 0
-      # Pick highest scoring song
-      next = _.max this.songs, (song) -> song.score
-      this.songs = _.select this.songs, (song) -> song isnt next
-      this.played.push(this.playing)
-      this.playing = next
-      this.save()
+  partySchema.methods.playNextSong = (uri) ->
+    nextSong = _.find(this.songs, (s) -> s.uri is uri)
+    newSongs = _.reject(this.songs, (s) -> s.uri is uri)
+    this.songs = newSongs
+    this.playing = nextSong
+    this.save()
     this.playing
 
   module.exports.Party = mongoose.model 'Party', partySchema

@@ -6,7 +6,7 @@ define (require, exports, module) ->
 
   SOCKET_PORT = 8080
 
-  exports.partyClient = Backbone.Model.extend
+  exports.PartyPlayer = Backbone.Model.extend
 
     idAttribute: '_id'
 
@@ -17,5 +17,18 @@ define (require, exports, module) ->
       # Create socket.io actions
       @socket = io.connect "http://localhost:#{SOCKET_PORT}"
 
-      # TODO
+      @socket.on 'addsong', (song) ->
+        this.get('songs').push(data)
 
+    hasSongs: () ->
+      this.get('songs').length isnt 0
+
+    nextSong: () ->
+      # Pick next top rated song and play it
+      next = _.max(this.get("songs"), (s) -> s.score)
+      this.set("songs", _.select(this.get("songs"), (song) -> song isnt next))
+      this.set("playing", next)
+
+      @socket.emit('playsong', next)
+
+      next

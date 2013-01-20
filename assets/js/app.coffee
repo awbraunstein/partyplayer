@@ -44,25 +44,28 @@ define (require, exports, module) ->
   initPlayer = (party) ->
     $partyPlayer = $('#party-player')
 
+    m = new PartyPlayer(party)
+    console.log m
+
     playerView = new PartyPlayerView
-      model: new PartyPlayer party
+      model: m
 
     $partyPlayer.empty().append playerView.$el
     playerView.render()
 
   sampleSong =
-    source: 'Soundcloud'
+    source: 'Youtube'
     score: 4
-    uri: '/tracks/297'
-    duration: 399151
+    uri: 'KlujizeNNQM'
+    duration: 5000
     timestamp:
       Date.now()
 
   sampleSong2 =
     source: 'Soundcloud'
     score: 3
-    uri: '/tracks/296'
-    duration: 422556
+    uri: '/tracks/297'
+    duration: 399151
     timestamp:
       Date.now()
 

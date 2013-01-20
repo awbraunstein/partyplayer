@@ -8,7 +8,7 @@ define (require, exports, module) ->
 
   SOCKET_PORT = 8080
 
-  exports.partyClient = Backbone.Model.extend
+  exports.PartyClient = Backbone.Model.extend
 
     idAttribute: '_id'
 
@@ -58,8 +58,6 @@ define (require, exports, module) ->
 
     # Send a song request to the server
     sendNewRequest: (source, uri) ->
-      console.log '***********'
-      console.log uri
       @socket.emit 'addsong',
         id: @id
         uri: uri

@@ -8,7 +8,8 @@ define (require, exports, module) ->
   # compilation process in `utils.tmpl`
   templates =
     mobileClient: require 'text!templates/mobile-client.handlebars'
-    trackItem: require 'text!templates/track-item.handlebars'
+    trackItem:    require 'text!templates/track-item.handlebars'
+    partyPlayer:  require 'text!templates/player.handlebars'
 
   # Compile the templates!
   for id, source of templates

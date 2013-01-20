@@ -7,7 +7,7 @@ define(function(require, exports, module) {
   Track = require('models/track');
   TrackList = require('collections/trackList');
   SOCKET_PORT = 8080;
-  return exports.partyClient = Backbone.Model.extend({
+  return exports.PartyClient = Backbone.Model.extend({
     idAttribute: '_id',
     url: function() {
       return "/party/" + this.id;
@@ -53,8 +53,6 @@ define(function(require, exports, module) {
       }, this));
     },
     sendNewRequest: function(source, uri) {
-      console.log('***********');
-      console.log(uri);
       return this.socket.emit('addsong', {
         id: this.id,
         uri: uri,

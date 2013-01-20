@@ -67,13 +67,31 @@
       loc: [ 39.9516968, -75.1909739 ]
     newParty.save (err) ->
       console.log err
-    newParty.addSong
-      source: 'spotify'
-      uri: 'http://open.spotify.com/track/29ufIwomYfLbWBxPMdaUZm'
-      score: 0
-      duration: 326000
-    newParty.playNextSong()
 
+    newParty.addSong
+      source: 'youtube'
+      score: 3
+      uri: 'KlujizeNNQM'
+      duration: 5000
+      timestamp:
+        Date.now()
+        
+    newParty.addSong
+      title:"Corinna"
+      artist:"Phish"
+      duration: 274000
+      score: 2
+      uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
+      source: 'spotify'
+
+    newParty.addSong
+      source: 'soundcloud'
+      score: 4
+      uri: '/tracks/297'
+      duration: 399151
+      timestamp:
+        Date.now()
+      
   # generateParty()
 
   # --------------------------------------------------------------------------
@@ -114,6 +132,7 @@
       console.log data
 
       models.Party.findById socket.party, (err, party) ->
+        song = party.playNextSong data.uri
         io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
     )
 

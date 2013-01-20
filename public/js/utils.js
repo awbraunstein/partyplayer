@@ -5,7 +5,8 @@ define(function(require, exports, module) {
   Handlebars = require('handlebars');
   templates = {
     mobileClient: require('text!templates/mobile-client.handlebars'),
-    trackItem: require('text!templates/track-item.handlebars')
+    trackItem: require('text!templates/track-item.handlebars'),
+    partyPlayer: require('text!templates/player.handlebars')
   };
   for (id in templates) {
     source = templates[id];
