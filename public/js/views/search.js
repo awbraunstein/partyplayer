@@ -39,7 +39,8 @@ define(function(require, exports, module) {
             uri: video.media$group.yt$videoid.$t,
             duration: parseInt(video.media$group.yt$duration.seconds) * 1000,
             title: video.title.$t,
-            source: 'youtube'
+            source: 'youtube',
+            album_art: video['media$group']['media$thumbnail'][0].url
           });
         }
         return callback('youtube', tracks);
@@ -63,7 +64,8 @@ define(function(require, exports, module) {
               duration: song.duration,
               title: song.title,
               artist: song.user.username,
-              source: 'soundcloud'
+              source: 'soundcloud',
+              album_art: song.artwork_url
             });
           }
         }
