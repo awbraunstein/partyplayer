@@ -37,6 +37,7 @@ define (require, exports, module) ->
             duration: parseInt(video.media$group.yt$duration.seconds) * 1000
             title: video.title.$t
             source: 'youtube'
+            album_art: video['media$group']['media$thumbnail'][0].url
         callback('youtube', tracks)
 
     searchSoundcloud: (str, callback) ->
@@ -55,6 +56,7 @@ define (require, exports, module) ->
             title: song.title
             artist: song.user.username
             source: 'soundcloud'
+            album_art: song.artwork_url
         callback('soundcloud', tracks)
 
     render: () ->

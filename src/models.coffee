@@ -8,6 +8,7 @@
     source: String
     artist: String
     title: String
+    album_art: String
     score:
       type: Number
       default: 1

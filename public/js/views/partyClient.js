@@ -80,16 +80,25 @@ define(function(require, exports, module) {
       });
       return null;
     },
+    clearSearch: function(e) {
+      return this.$(SEARCH_RESULT_SELECTOR).empty();
+    },
     requestTrack: function(e) {
-      var $el;
+      var $el, html, t;
       e.preventDefault();
       $el = $(e.currentTarget);
-      return this.model.sendNewRequest({
+      t = {
         source: $el.attr('data-source'),
         uri: $el.attr('data-uri'),
         title: $el.attr('data-title'),
-        artist: $el.attr('data-title')
-      });
+        artist: $el.attr('data-artist'),
+        score: 0,
+        album_art: $el.attr('data-art')
+      };
+      this.model.sendNewRequest(t);
+      html = utils.tmpl('trackItem', t);
+      this.$(TRACK_LIST_SELECTOR).append(html);
+      return this.clearSearch();
     }
   });
 });
