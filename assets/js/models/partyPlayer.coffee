@@ -36,7 +36,7 @@ define (require, exports, module) ->
       @socket.on 'addsong', (song) =>
         console.log '******* got new request ********'
         console.log song
-        this.get('songs').push(song)
+        this.get('songs').push(new Track(song))
 
     hasSongs: () ->
       this.get('songs').length isnt 0
@@ -44,9 +44,10 @@ define (require, exports, module) ->
     # Pick next top rated song and play it
     nextSong: () ->
       songs = @get('songs')
-      next = songs.max (s) -> s.score
+      next = songs.max (s) -> s.get('score')
+      console.log next
       @get("played").push @get("playing")
-      @set("songs", songs.select, (song) -> song isnt next)
+      @set("songs", songs.select (song) -> song isnt next)
       @set("playing", next)
 
       @socket.emit('playsong', next)

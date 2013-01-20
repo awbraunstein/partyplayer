@@ -48,28 +48,29 @@ define (require, exports, module) ->
         null, null, params, attrs
 
     playNext: () ->
+      
       if this.model.hasSongs()
         # Stop all existing music
         if this.sound
           this.sound.stop()
         player.stopVideo()
         next = this.model.nextSong()
-        switch next.source
+        switch next.get('source')
           when "soundcloud"
-            SC.stream next.uri, (sound) =>
+            SC.stream next.get('uri'), (sound) =>
               this.sound = sound
               this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
               sound.play()
           when "youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
-            player.loadVideoById(next.uri, 0, "small")
+            player.loadVideoById(next.get('uri'), 0, "small")
             player.playVideo()
             this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
             
     pause: () ->
       clearTimeout(this.playId)
-      switch this.model.get("playing").source
+      switch this.model.get("playing").get('source')
         when "soundcloud"
           # Soundcloud uses soundManager for streaming, see
           # http://www.schillmania.com/projects/soundmanager2/doc/
@@ -79,7 +80,7 @@ define (require, exports, module) ->
           
     resume: () ->
       if this.model.get("playing")
-        switch this.model.get("playing").source
+        switch this.model.get("playing").get('source')
           when "soundcloud"
             this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
             this.sound.play()
