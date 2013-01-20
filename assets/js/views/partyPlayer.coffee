@@ -3,6 +3,7 @@ define (require, exports, module) ->
   $         = require 'jquery'
   _         = require 'underscore'
   Backbone  = require 'backbone'
+  utils     = require 'utils'
 
   require '/lib/js/soundcloud.js'
   require '/lib/js/swfobject.js'  
@@ -21,6 +22,8 @@ define (require, exports, module) ->
       'click .play'  : 'play'
       'click .pause' : 'pause'
       'click .next'  : 'next'
+
+    template: 'partyPlayer'
     
     initialize: () ->
       console.log 'player view init'
@@ -32,6 +35,16 @@ define (require, exports, module) ->
       swfobject.embedSWF YT_URL, "youtube", "425", "356", "8",
         null, null, params, attrs
 
+    loadSpotifySong: (uri) ->
+      console.log uri
+      @render 'spotify-uri': uri
+
+    testSong:
+      title:"Corinna"
+      artist:"Phish"
+      duration: 274000
+      uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
+      
     playNext: () ->
       console.log "here"
       if this.model.hasSongs()
@@ -52,7 +65,11 @@ define (require, exports, module) ->
             player.playVideo()
             this.playId = setTimeout(this.playNext, next.duration)
           when "Spotify"
-            null
+            loadSpotifySong next.uri
+            btn = @$('iframe').contents().find('.play-pause-btn')
+            btn.click()
+            this.playID = setTimeout(this.playNext, next.duration)
+            
             
     pause: () ->
       clearTimeout(this.playId)
@@ -64,7 +81,8 @@ define (require, exports, module) ->
         when "Youtube"
           player.pauseVideo()
         when "Spotify"
-          null
+          btn = @$('iframe').contents().find('.play-pause-btn')
+          btn.click()
           
     resume: () ->
       if this.model.get("playing")
@@ -77,9 +95,16 @@ define (require, exports, module) ->
               (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
           when "Spotify"
-            null
-          
+            btn = @$('iframe').contents().find('.play-pause-btn')
+            elapsedTimeString = @$('iframe').contents().find('.time-spent').contents()
+            [minutes, seconds] = elapsedTimeString.split(':')
+            elapsedTime = ((parseInt(minutes) * 60) + parseInt(seconds)) * 1000
+            remainingTime = this.model.get('playing').duration - elapsedTime
+            this.playId = setTimeout this.playNext, remainingTime
+            btn.click()
+
     play: () ->
+      debugger
       if this.model.get("playing")
         this.resume()
       else
@@ -90,6 +115,8 @@ define (require, exports, module) ->
         clearTimeout(this.playId)
       this.playNext()
 
-    render: () ->
-      this.$el.html("<button class='play'>play</button><button class='pause'>pause</button><button class='next'>next</button>")
+    render: (data) ->
+      d = data || {}
+      html = utils.tmpl @template, d
+      @$el.html html
       return this

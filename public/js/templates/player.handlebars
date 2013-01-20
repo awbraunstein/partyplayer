@@ -1,0 +1,14 @@
+<div id="party-player">
+
+  <button class='play'>play</button>
+  <button class='pause'>pause</button>
+  <button class='next'>next</button>
+
+  <div id="spotify-player">
+  {{#if spotify-uri}}
+  <iframe src="https://embed.spotify.com/?uri={{spotify-uri}}" width="300" height="380" frameborder="0" allowtransparency="true">
+  </iframe>
+  {{/if}}
+  </div>
+
+</div>

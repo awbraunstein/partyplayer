@@ -8,6 +8,7 @@ define (require, exports, module) ->
   # compilation process in `utils.tmpl`
   templates =
     mobileClient: require 'text!templates/mobile-client.handlebars'
+    partyPlayer: require 'text!templates/player.handlebars'
 
   utils =
 
