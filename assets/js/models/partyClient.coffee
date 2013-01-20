@@ -60,8 +60,7 @@ define (require, exports, module) ->
 
     # Send a song request to the server
     sendNewRequest: (track) ->
-      @socket.emit 'addsong', _.extend track,
-        id: @id
+      @socket.emit 'addsong', track
 
     # Send a vote request to the server
     voteSong: (uri, vote) ->

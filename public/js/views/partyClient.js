@@ -19,13 +19,19 @@ define(function(require, exports, module) {
       'click .search-result': 'requestTrack'
     },
     initialize: function() {
+      var _this = this;
       this.searchView = new SearchView();
       this.model.get('songs').on('change:score', this.onScoreChange);
-      this.model.get('songs').on('add', this.renderTrackList);
-      return this.model.get('playing').on('change', this.render);
+      this.model.get('songs').on('add', function() {
+        return _this.renderTrackList();
+      });
+      return this.model.get('playing').on('change', function() {
+        return _this.render();
+      });
     },
     renderTrackList: function() {
       var $list;
+      console.log('rendering track list');
       $list = this.$(TRACK_LIST_SELECTOR);
       $list.empty();
       return this.model.get('songs').each(function(song) {
@@ -97,7 +103,6 @@ define(function(require, exports, module) {
       };
       this.model.sendNewRequest(t);
       html = utils.tmpl('trackItem', t);
-      this.$(TRACK_LIST_SELECTOR).append(html);
       return this.clearSearch();
     }
   });
