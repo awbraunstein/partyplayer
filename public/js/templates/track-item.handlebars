@@ -1,5 +1,11 @@
-<div class='track-item'>
-  <a href="{{uri}}">
-    {{title}} - {{artist}}
-  </a>
-</div>
+<li class='track-item'>
+  <img class='album-art' src='http://placehold.it/80x80' />
+  <div class='meta'>
+    <div class='votes'>{{score}} votes</div>
+    <div class='vote active'></div>
+    <p class='track-title'>{{title}}</p>
+    {{#if artist}}
+    <p class='track-artist'>{{artist}}</p>
+    {{/if}}
+  </div>
+</li>

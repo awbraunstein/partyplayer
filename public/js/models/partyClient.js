@@ -21,6 +21,7 @@ define(function(require, exports, module) {
       this.set('playing', track);
       this.set('played', played);
       this.set('songs', songs);
+      console.log("currently playing " + (track.get('title')) + "...");
       return this.initSocketActions();
     },
     initSocketActions: function() {
@@ -31,7 +32,7 @@ define(function(require, exports, module) {
         });
       }, this));
       this.socket.on('populate', __bind(function(party) {
-        return console.log("populate: " + party);
+        return null;
       }, this));
       this.socket.on('playsong', __bind(function(next) {
         var nextTrack;

@@ -26,6 +26,7 @@ define (require, exports, module) ->
       @set 'played', played
       @set 'songs', songs
 
+      console.log "currently playing #{track.get 'title'}..."
       @initSocketActions()
 
     # Register socket.io actions
@@ -37,7 +38,8 @@ define (require, exports, module) ->
           id: @id
 
       @socket.on 'populate', (party) =>
-        console.log "populate: #{party}"
+        # console.log "populate: #{party}"
+        return null
 
       @socket.on 'playsong', (next) =>
         console.log '***** play new song *****'

@@ -37,7 +37,8 @@ define (require, exports, module) ->
         view.render()
 
     render: () ->
-      html = utils.tmpl @template, @model.toJSON()
+      html = utils.tmpl @template, _.extend @model.toJSON(),
+        previous: @model.get('played').last()
       @$el.html html
       @renderTrackList()
       return this
@@ -55,11 +56,11 @@ define (require, exports, module) ->
       $results = @$(SEARCH_RESULT_SELECTOR)
       partyID  = @model.get 'id'
 
+      $results.empty()
       query = @$('#search').val()
       if query.length < 4
         return
 
-      $results.empty()
       @searchView.search query, (source, results) ->
         # Render each search result in the results div
         # Because of the excessive time it would take to create Backbone views,

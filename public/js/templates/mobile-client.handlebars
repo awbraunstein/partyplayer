@@ -1,19 +1,41 @@
-<div class='mobile-client'>
-  <h1>{{name}}</h1>
+<div class='mobile-header'>
+  <h3>{{name}}</h3>
   <input id='search' type='text' placeholder='Search for songs...'
-         autofocus='autofocus'/>
-  <div id='search-results'>
-
-  </div>
-
-  {{#with playing}}
-  <div class='now-playing'>
-    <a href="{{uri}}">
-      <h3>{{title}} - {{artist}}</h3>
-    </a>
-    {{score}}
-  </div>
-  {{/with}}
-
-  <ul id='request-list'></ul>
+          autofocus='autofocus'/>
+  <ul id='search-results'>
+    <li class='search-result'>
+      <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+      <div class='meta'>
+        <p class='track-title'>Gratisfaction</p>
+        <p class='track-artist'>The Strokes</p>
+      </div>
+    </li>
+  </ul>
 </div>
+
+{{#with previous}}
+<div class='previous track-item'>
+  <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+  <div class='meta'>
+    <div class='votes'>Last Played</div>
+    <span class='time'>3:32</span>
+    <p class='track-title'>Gratisfaction</p>
+    <p class='track-artist'>The Strokes</p>
+  </div>
+</div>
+{{/with}}
+
+{{#with playing}}
+<div class='now-playing track-item'>
+  <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+  <div class='meta'>
+    <div class='votes'>Now Playing</div>
+    <span class='time'>3:32</span>
+    <p class='track-title'>Metabolism</p>
+    <p class='track-artist'>The Strokes</p>
+  </div>
+</div>
+{{/with}}
+
+<div class='request-divider'>Up Next</div>
+<ul id='request-list'></ul>

@@ -39,7 +39,9 @@ define(function(require, exports, module) {
     },
     render: function() {
       var html;
-      html = utils.tmpl(this.template, this.model.toJSON());
+      html = utils.tmpl(this.template, _.extend(this.model.toJSON(), {
+        previous: this.model.get('played').last()
+      }));
       this.$el.html(html);
       this.renderTrackList();
       return this;
@@ -57,11 +59,11 @@ define(function(require, exports, module) {
       var $results, partyID, query;
       $results = this.$(SEARCH_RESULT_SELECTOR);
       partyID = this.model.get('id');
+      $results.empty();
       query = this.$('#search').val();
       if (query.length < 4) {
         return;
       }
-      $results.empty();
       this.searchView.search(query, function(source, results) {
         var html, res, _i, _len, _results;
         _results = [];
