@@ -21,7 +21,7 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, NEW_PARTY_REGEX, PARTY_NAME_REGEX, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPartyForm, initPlayer, server, utils, _;
+  var $, Backbone, NEW_PARTY_REGEX, PARTY_NAME_REGEX, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPartyForm, initPlayer, initSpinner, server, utils, _;
   PARTY_NAME_REGEX = /party\/(.+)/;
   NEW_PARTY_REGEX = /\/new$/;
   _ = require('underscore');
@@ -58,8 +58,14 @@ define(function(require, exports, module) {
     $('input[name=longitude]').val(position.coords.longitude);
     return null;
   };
+  initSpinner = function() {
+    var spinner, target;
+    target = document.getElementById('spin');
+    return spinner = new Spinner({}).spin(target);
+  };
   init = function() {
     var matched;
+    initSpinner();
     matched = window.location.pathname.match(PARTY_NAME_REGEX);
     if (matched) {
       server.getPartyInfo(matched[1], function(partyData) {

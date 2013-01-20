@@ -41,6 +41,9 @@ body {
 }
 
 /* Main styles */
+#spin {
+  margin-top: 50px;
+}
 
 /* Hide youtube div */
 #youtubeplayer {
@@ -54,6 +57,7 @@ body {
   padding: 8px 16px;
   margin: 0;
   font-size: 16px;
+  font-family: @bodyFont;
   // border-radius: 18px;
 }
 
@@ -173,10 +177,17 @@ p.track-artist {
 
   .vote {
     float: right;
-    background: @grayLighter;
-    width: 25px;
-    height: 25px;
-    margin: 10px 5px;
+    margin: 15px 5px;
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 20px solid @grayLight;
+    cursor: pointer;
+    &.active {
+      border-bottom: 20px solid @gray;
+      cursor: default;
+    }
   }
 }
 

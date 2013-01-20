@@ -59,7 +59,12 @@ define (require, exports, module) ->
     $('input[name=longitude]').val(position.coords.longitude)
     return null
 
+  initSpinner = () ->
+    target  = document.getElementById('spin')
+    spinner = new Spinner({}).spin(target)
+
   init = () ->
+    initSpinner()
     matched = window.location.pathname.match PARTY_NAME_REGEX
     if matched
       server.getPartyInfo matched[1], (partyData) ->
