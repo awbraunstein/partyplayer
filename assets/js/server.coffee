@@ -5,7 +5,7 @@ define (require, exports, module) ->
 
   FIND_PARTIES_PATH = '/nearby'
   CREATE_PARTY_PATH = '/create'
-
+  
   server =
 
     findParties: (coordinates, callback) ->
