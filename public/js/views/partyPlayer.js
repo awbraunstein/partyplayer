@@ -35,13 +35,14 @@ define(function(require, exports, module) {
       return swfobject.embedSWF(YT_URL, "youtube", "425", "356", "8", null, null, params, attrs);
     },
     playNext: function() {
-      var _this = this;
-      console.log("here");
+      var next,
+        _this = this;
       if (this.model.hasSongs()) {
         if (this.sound) {
           this.sound.stop();
         }
         player.stopVideo();
+        next = this.model.nextSong();
         switch (next.source) {
           case "Soundcloud":
             return SC.stream(next.uri, function(sound) {

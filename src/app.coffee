@@ -72,8 +72,22 @@
       uri: 'http://open.spotify.com/track/29ufIwomYfLbWBxPMdaUZm'
       score: 0
       duration: 326000
-    newParty.playNextSong()
+    newParty.addSong
+      source: 'Youtube'
+      score: 3
+      uri: 'KlujizeNNQM'
+      duration: 5000
+      timestamp:
+        Date.now()
 
+    newParty.addSong
+      source: 'Soundcloud'
+      score: 4
+      uri: '/tracks/297'
+      duration: 399151
+      timestamp:
+        Date.now()
+      
   # generateParty()
 
   # --------------------------------------------------------------------------
