@@ -8,7 +8,7 @@ define(function(require, exports, module) {
   return exports.partyClientView = Backbone.View.extend({
     template: 'mobileClient',
     events: {
-      'keypress #search': 'autoCompleteSearch'
+      'keyup #search': 'autoCompleteDebounce'
     },
     initialize: function() {
       console.log('client view init');
@@ -20,6 +20,9 @@ define(function(require, exports, module) {
       html = utils.tmpl(this.template, this.model.toJSON());
       this.$el.html(html);
       return this;
+    },
+    autoCompleteDebounce: function(e) {
+      return _.debounce(this.autoCompleteSearch(e), 300);
     },
     autoCompleteSearch: function(e) {
       var $results, partyID, query;

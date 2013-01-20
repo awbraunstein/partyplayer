@@ -14,7 +14,7 @@ define (require, exports, module) ->
     template: 'mobileClient'
 
     events:
-      'keypress #search': 'autoCompleteSearch'
+      'keyup #search': 'autoCompleteDebounce'
 
     initialize: () ->
       console.log 'client view init'
@@ -25,6 +25,9 @@ define (require, exports, module) ->
       html = utils.tmpl @template, @model.toJSON()
       @$el.html html
       return this
+
+    autoCompleteDebounce: (e) ->
+      _.debounce @autoCompleteSearch(e), 300
 
     autoCompleteSearch: (e) ->
       $results = @$('#search-results')
@@ -45,5 +48,4 @@ define (require, exports, module) ->
           $results.append res
           # $results.append trackView.$el
           # trackView.render()
-
       return null
