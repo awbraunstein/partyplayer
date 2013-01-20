@@ -51,18 +51,18 @@ define (require, exports, module) ->
     playerView.render()
 
   sampleSong =
-    source: 'Soundcloud'
+    source: 'Youtube'
     score: 4
-    uri: '/tracks/297'
-    duration: 399151
+    uri: 'KlujizeNNQM'
+    duration: 5000
     timestamp:
       Date.now()
 
   sampleSong2 =
     source: 'Soundcloud'
     score: 3
-    uri: '/tracks/296'
-    duration: 422556
+    uri: '/tracks/297'
+    duration: 399151
     timestamp:
       Date.now()
 
