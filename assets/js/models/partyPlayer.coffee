@@ -43,10 +43,11 @@ define (require, exports, module) ->
 
     # Pick next top rated song and play it
     nextSong: () ->
-      next = _.max(this.get("songs"), (s) -> s.score)
-      this.get("played").push(this.get("playing"))
-      this.set("songs", _.select(this.get("songs"), (song) -> song isnt next))
-      this.set("playing", next)
+      songs = @get('songs')
+      next = songs.max (s) -> s.score
+      @get("played").push @get("playing")
+      @set("songs", songs.select, (song) -> song isnt next)
+      @set("playing", next)
 
       @socket.emit('playsong', next)
       next

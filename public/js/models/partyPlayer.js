@@ -39,14 +39,15 @@ define(function(require, exports, module) {
       return this.get('songs').length !== 0;
     },
     nextSong: function() {
-      var next;
-      next = _.max(this.get("songs"), function(s) {
+      var next, songs;
+      songs = this.get('songs');
+      next = songs.max(function(s) {
         return s.score;
       });
       this.get("played").push(this.get("playing"));
-      this.set("songs", _.select(this.get("songs"), function(song) {
+      this.set("songs", songs.select, function(song) {
         return song !== next;
-      }));
+      });
       this.set("playing", next);
       this.socket.emit('playsong', next);
       return next;
