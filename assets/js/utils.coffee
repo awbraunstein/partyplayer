@@ -9,6 +9,7 @@ define (require, exports, module) ->
   templates =
     mobileClient: require 'text!templates/mobile-client.handlebars'
     trackItem:    require 'text!templates/track-item.handlebars'
+    trackItemAdmin: require 'text!templates/track-item-admin.handlebars'
     partyPlayer:  require 'text!templates/player.handlebars'
     searchResult: require 'text!templates/search-result.handlebars'
 

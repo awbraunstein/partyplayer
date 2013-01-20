@@ -45,11 +45,8 @@ define (require, exports, module) ->
   initPlayer = (party) ->
     $partyPlayer = $('#party-player')
 
-    m = new PartyPlayer(party)
-    console.log m
-
     playerView = new PartyPlayerView
-      model: m
+      model: new PartyPlayer(party)
 
     $partyPlayer.empty().append playerView.$el
     playerView.render()

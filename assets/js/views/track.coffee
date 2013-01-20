@@ -9,10 +9,17 @@ define (require, exports, module) ->
 
     template: 'trackItem'
 
+    adminTemplate: 'trackItemAdmin'
+
     initialize: () ->
       return this
 
     render: () ->
       html = utils.tmpl @template, @model.toJSON()
+      @$el.html html
+      return this
+
+    renderAdmin: () ->
+      html = utils.tmpl @adminTemplate, @model.toJSON()
       @$el.html html
       return this

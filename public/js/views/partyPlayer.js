@@ -1,18 +1,20 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(function(require, exports, module) {
-  var $, Backbone, PartyClientView, Search, YT_URL, utils, _;
+  var $, Backbone, PartyClientView, Search, TRACK_LIST_SELECTOR, TrackView, YT_URL, utils, _;
   $ = require('jquery');
   _ = require('underscore');
   utils = require('utils');
   Backbone = require('backbone');
   Search = require('models/search');
   PartyClientView = require('views/partyClient');
+  TrackView = require('views/track');
   require('/lib/js/soundcloud.js');
   require('/lib/js/swfobject.js');
   SC.initialize({
     client_id: '0bc80f756a59625ed11e9791f107004a'
   });
   YT_URL = "http://www.youtube.com/apiplayer?enablejsapi=1&version=3";
+  TRACK_LIST_SELECTOR = '#request-list';
   window.onYouTubePlayerReady = function(playerId) {
     return window.player = document.getElementById("youtubeplayer");
   };
@@ -113,11 +115,46 @@ define(function(require, exports, module) {
           return player.getCurrentTime() * 1000;
       }
     },
-    render: function(data) {
-      var d, html;
-      d = data || {};
-      html = utils.tmpl(this.template, d);
+    renderTrackList: function() {
+      var $list;
+      $list = this.$(TRACK_LIST_SELECTOR);
+      $list.empty();
+      return this.model.get('songs').each(function(song) {
+        var view;
+        view = new TrackView({
+          model: song
+        });
+        $list.append(view.$el);
+        return view.renderAdmin();
+      });
+    },
+    render: function() {
+      var data, html, view;
+      data = this.model.toJSON();
+      if (this.model.get('playing')) {
+        data.playing = this.model.get('playing').toJSON();
+      } else {
+        data.playing = false;
+      }
+      if (this.model.get('previous')) {
+        data.previous = this.model.get('previous').toJSON();
+      } else {
+        data.previous = false;
+      }
+      html = utils.tmpl(this.template, data);
       this.$el.html(html);
+      if (this.model.get('previous')) {
+        view = new TrackView({
+          model: this.model.get('previous')
+        });
+        this.$('.previous').html(view.renderAdmin().$el);
+      }
+      if (this.model.get('playing')) {
+        view = new TrackView({
+          model: this.model.get('playing')
+        });
+        this.$('.now-playing').html(view.renderAdmin().$el);
+      }
       this.renderTrackList();
       return this;
     }

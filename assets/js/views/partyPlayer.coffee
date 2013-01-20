@@ -7,6 +7,7 @@ define (require, exports, module) ->
 
   Search          = require 'models/search'
   PartyClientView = require 'views/partyClient'
+  TrackView       = require 'views/track'
 
   require '/lib/js/soundcloud.js'
   require '/lib/js/swfobject.js'
@@ -14,6 +15,7 @@ define (require, exports, module) ->
   SC.initialize client_id: '0bc80f756a59625ed11e9791f107004a'
 
   YT_URL = "http://www.youtube.com/apiplayer?enablejsapi=1&version=3"
+  TRACK_LIST_SELECTOR = '#request-list'
 
   # Ugly code that Youtube mandates we use
   window.onYouTubePlayerReady = (playerId) ->
@@ -105,9 +107,40 @@ define (require, exports, module) ->
         when "youtube"
           player.getCurrentTime() * 1000
 
-    render: (data) ->
-      d = data || {}
-      html = utils.tmpl @template, d
+    renderTrackList: () ->
+      $list = @$(TRACK_LIST_SELECTOR)
+      $list.empty()
+
+      @model.get('songs').each (song) ->
+        view = new TrackView
+          model: song
+        $list.append view.$el
+        view.renderAdmin()
+
+    render: () ->
+      data = @model.toJSON()
+
+      if @model.get('playing')
+        data.playing = @model.get('playing').toJSON()
+      else
+        data.playing = false
+
+      if @model.get('previous')
+        data.previous = @model.get('previous').toJSON()
+      else
+        data.previous = false
+
+      html = utils.tmpl @template, data
       @$el.html html
+
+      if @model.get('previous')
+        view = new TrackView
+          model: @model.get('previous')
+        @$('.previous').html(view.renderAdmin().$el)
+      if @model.get('playing')
+        view = new TrackView
+          model: @model.get('playing')
+        @$('.now-playing').html(view.renderAdmin().$el)
+
       @renderTrackList()
       return this

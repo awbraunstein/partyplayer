@@ -206,3 +206,91 @@ ul#request-list {
   padding: 0;
 }
 
+#party-player {
+  .sidebar {
+    height: 500px;
+    #logo {
+      width: 100%;
+      margin-bottom: 1em;
+    }
+  }
+
+  .track-item.admin {
+    .duration {
+      float: right;
+    }
+    .track-artist {
+      font-size: 18px;
+      color: @gray;
+    }
+  }
+
+  .now-playing {
+    float: left;
+    width: 100%;
+    background: @grayLighter;
+  }
+
+  #request-list {
+    float: left;
+    width: 100%;
+    background: @white;
+  }
+
+}
+
+#player-header {
+  height: 160px;
+  color: @white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+  img {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    top: -260px;
+    -webkit-filter: brightness(75%);
+  }
+
+  .info {
+    float: left;
+    margin: 20px 0 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .track-title, .track-artist {
+    color: @white;
+    .text-overflow();
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .controls-wrapper {
+    float: left;
+    width: 100%;
+
+    .controls {
+      width: 160px;
+      margin: 0 auto;
+    }
+
+    button {
+      background: none;
+      border: none;
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+      .background-size(100%);
+      &.play {
+        background: url('../img/play.png') no-repeat;
+      }
+      &.pause {
+        background: url('../img/pause.png') no-repeat;
+      }
+      &.next {
+        background: url('../img/next.png') no-repeat;
+      }
+    }
+  }
+}
+
