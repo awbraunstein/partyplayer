@@ -1,3 +1,4 @@
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(function(require, exports, module) {
   var $, Backbone, SEARCH_RESULT_SELECTOR, SearchView, TRACK_LIST_SELECTOR, Track, TrackList, TrackView, utils, _;
   $ = require('jquery');
@@ -18,7 +19,10 @@ define(function(require, exports, module) {
     },
     initialize: function() {
       this.searchView = new SearchView();
-      return this.model.get('songs').on('change:score', this.onScoreChange);
+      this.model.get('songs').on('change:score', this.onScoreChange);
+      return this.model.get('songs').on('add', __bind(function() {
+        return this.renderTrackList();
+      }, this));
     },
     renderTrackList: function() {
       var $list;
@@ -42,10 +46,10 @@ define(function(require, exports, module) {
     },
     onScoreChange: function(song) {
       this.model.get('songs').sort();
-      return this.renderTrackList;
+      return this.renderTrackList();
     },
     autoCompleteDebounce: function(e) {
-      if (e.keyCode >= 65 && e.keyCode <= 90) {
+      if ((e.keyCode >= 65 && e.keyCode <= 90) || e.keyCode === 8) {
         return _.debounce(this.autoCompleteSearch(e), 500);
       }
     },
@@ -59,23 +63,26 @@ define(function(require, exports, module) {
       }
       $results.empty();
       this.searchView.search(query, function(source, results) {
-        var res, _i, _len, _results;
+        var html, res, _i, _len, _results;
         _results = [];
         for (_i = 0, _len = results.length; _i < _len; _i++) {
           res = results[_i];
-          _results.push(_.isObject(res) ? $results.append("<a class='search-result' data-uri='" + res.uri + "'                              data-source='" + res.source + "' href='#'>                              " + res.title + " - " + res.artist + "                            </a>") : void 0);
+          _results.push(_.isObject(res) ? (html = utils.tmpl('searchResult', res), $results.append(html)) : void 0);
         }
         return _results;
       });
       return null;
     },
     requestTrack: function(e) {
-      var $el, source, uri;
+      var $el;
       e.preventDefault();
       $el = $(e.currentTarget);
-      source = $el.attr('data-source');
-      uri = $el.attr('data-uri');
-      return this.model.sendNewRequest(source, uri);
+      return this.model.sendNewRequest({
+        source: $el.attr('data-source'),
+        uri: $el.attr('data-uri'),
+        title: $el.attr('data-title'),
+        artist: $el.attr('data-title')
+      });
     }
   });
 });

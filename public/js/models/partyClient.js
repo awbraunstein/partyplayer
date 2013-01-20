@@ -46,16 +46,16 @@ define(function(require, exports, module) {
       }, this));
       return this.socket.on('addsong', __bind(function(song) {
         var newRequest;
+        console.log('***** got new request ******');
+        console.log(song);
         newRequest = new Track(song);
         return this.get('songs').push(newRequest);
       }, this));
     },
-    sendNewRequest: function(source, uri) {
-      return this.socket.emit('addsong', {
-        id: this.id,
-        uri: uri,
-        type: source
-      });
+    sendNewRequest: function(track) {
+      return this.socket.emit('addsong', _.extend(track, {
+        id: this.id
+      }));
     },
     voteSong: function(uri, vote) {
       return this.socket.emit('vote', {

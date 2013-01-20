@@ -50,16 +50,16 @@ define (require, exports, module) ->
         @get('songs').remove nextTrack
 
       @socket.on 'addsong', (song) =>
+        console.log '***** got new request ******'
+        console.log song
         # Add a new song to the request list
         newRequest = new Track song
         @get('songs').push newRequest
 
     # Send a song request to the server
-    sendNewRequest: (source, uri) ->
-      @socket.emit 'addsong',
+    sendNewRequest: (track) ->
+      @socket.emit 'addsong', _.extend track,
         id: @id
-        uri: uri
-        type: source
 
     # Send a vote request to the server
     voteSong: (uri, vote) ->

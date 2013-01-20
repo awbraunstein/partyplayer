@@ -108,7 +108,6 @@
       # data is {id: room_id, ...}
       console.log data
 
-
       socket.party = data.id
       socket.join socket.party
 
@@ -136,12 +135,12 @@
 
       models.Party.findById socket.party, (err, party) ->
         song = party.playNextSong data.uri
-        io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
+        io.sockets.in(socket.party).emit 'playsong', data
     )
 
     socket.on('addsong', (data) ->
       # add song to a party playlist
-      # data is {id: room_id, type: media_type, uri: url/uri}
+      # data is {id: room_id, type: media_type, uri: url/uri, ...}
       console.log data
 
       models.Party.findById socket.party, (err, party) ->
@@ -154,7 +153,7 @@
 
         # add the new song to the server
         # then send out the update to everyone
-        io.sockets.in(socket.party).emit 'addsong', 'SERVER', song
+        io.sockets.in(socket.party).emit 'addsong', data
     )
 
     socket.on('vote', (data) ->
@@ -170,7 +169,7 @@
 
         # add the vote to the server
         # send out the update to everyone
-        io.sockets.in(socket.party).emit 'vote', 'SERVER', song
+        io.sockets.in(socket.party).emit 'vote', song
     )
 
     socket.on('disconnect', () ->
