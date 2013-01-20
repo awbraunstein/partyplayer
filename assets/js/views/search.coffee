@@ -60,11 +60,12 @@ define (require, exports, module) ->
 
     searchSpotify: (str, callback) ->
       # Search spotify with the given string
-      spotify_base_url = 'http://ws.spotify.com/search/1/track'
+      spotify_base_url = 'http://spotify-search.herokuapp.com/search'
       params =
         q: str
-      url = "#{spotify_base_url}.json?#{$.param params}"
+      url = "#{spotify_base_url}?#{$.param params}"
       $.get url, (data) ->
+        song.source = 'spotify' for song in data
         callback('spotify', data)
 
     render: () ->
