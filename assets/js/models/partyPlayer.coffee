@@ -3,6 +3,7 @@ define (require, exports, module) ->
   _         = require 'underscore'
   $         = require 'jquery'
   Backbone  = require 'backbone'
+  io        = require '/lib/js/socket.io.js'
 
   SOCKET_PORT = 8080
 
@@ -15,7 +16,7 @@ define (require, exports, module) ->
 
     initialize: () ->
       # Create socket.io actions
-      @socket = io.connect "http://localhost:#{SOCKET_PORT}"
+      @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
       @socket.emit 'createparty', id: @id
 
       @socket.on 'addsong', (song) =>

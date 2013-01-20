@@ -1,9 +1,10 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(function(require, exports, module) {
-  var $, Backbone, SOCKET_PORT, _;
+  var $, Backbone, SOCKET_PORT, io, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
+  io = require('/lib/js/socket.io.js');
   SOCKET_PORT = 8080;
   return exports.PartyPlayer = Backbone.Model.extend({
     idAttribute: '_id',
@@ -11,7 +12,7 @@ define(function(require, exports, module) {
       return "/party/" + this.id;
     },
     initialize: function() {
-      this.socket = io.connect("http://localhost:" + SOCKET_PORT);
+      this.socket = io.connect("http://" + window.location.hostname + ":" + SOCKET_PORT);
       this.socket.emit('createparty', {
         id: this.id
       });

@@ -1,9 +1,10 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(function(require, exports, module) {
-  var $, Backbone, SOCKET_PORT, Track, TrackList, _;
+  var $, Backbone, SOCKET_PORT, Track, TrackList, io, _;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
+  io = require('/lib/js/socket.io.js');
   Track = require('models/track');
   TrackList = require('collections/trackList');
   SOCKET_PORT = 8080;
@@ -25,7 +26,7 @@ define(function(require, exports, module) {
       return this.initSocketActions();
     },
     initSocketActions: function() {
-      this.socket = io.connect("http://localhost:" + SOCKET_PORT);
+      this.socket = io.connect("http://" + window.location.hostname + ":" + SOCKET_PORT);
       this.socket.on('connect', __bind(function() {
         return this.socket.emit('joinparty', {
           id: this.id
