@@ -127,7 +127,7 @@
       # data is {song}
       console.log data
 
-      party = Party.findById socket.party
+      party = models.Party.findById socket.party
 
       song = party.playNextSong data.uri
 
