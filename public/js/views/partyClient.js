@@ -16,12 +16,15 @@ define(function(require, exports, module) {
     template: 'mobileClient',
     events: {
       'keyup #search': 'autoCompleteDebounce',
-      'click .search-result': 'requestTrack'
+      'click .search-result': 'requestTrack',
+      'click .vote': 'vote'
     },
     initialize: function() {
       var _this = this;
       this.searchView = new SearchView();
-      this.model.get('songs').on('change:score', this.onScoreChange);
+      this.model.get('songs').on('change:score', function() {
+        return _this.onScoreChange();
+      });
       return this.model.get('songs').on('add', function() {
         return _this.renderTrackList();
       });
@@ -101,6 +104,15 @@ define(function(require, exports, module) {
       html = utils.tmpl('trackItem', t);
       this.$(TRACK_LIST_SELECTOR).append(html);
       return this.clearSearch();
+    },
+    vote: function(e) {
+      var $vote, uri;
+      $vote = this.$(e.target).closest('.track-item').one();
+      if (!$vote.hasClass('active')) {
+        uri = $vote.attr('data-uri');
+        this.model.voteSong(uri, 'up');
+        return $vote.addClass('active');
+      }
     }
   });
 });

@@ -146,7 +146,6 @@
     socket.on('vote', (data) ->
       # Vote for a uri in a party
       # data is {id: room_id, uri: url/uri, vote: up/down}
-      console.log data
 
       models.Party.findById socket.party, (err, party) ->
         song = if data.vote is 'up'

@@ -36,6 +36,13 @@ define(function(require, exports, module) {
       this.socket.on('populate', function(party) {
         return null;
       });
+      this.socket.on('vote', function(song) {
+        return _this.get('songs').each(function(s) {
+          if (s.get('uri') === song.uri) {
+            return s.set('score', song.score);
+          }
+        });
+      });
       this.socket.on('playsong', function(next) {
         var nextTrack;
         console.log('***** play new song *****');

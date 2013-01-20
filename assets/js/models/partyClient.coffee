@@ -40,6 +40,10 @@ define (require, exports, module) ->
       @socket.on 'populate', (party) =>
         # console.log "populate: #{party}"
         return null
+      
+      @socket.on 'vote', (song) =>
+        @get('songs').each (s) ->
+          s.set('score', song.score) if s.get('uri') is song.uri
 
       @socket.on 'playsong', (next) =>
         console.log '***** play new song *****'
@@ -69,4 +73,3 @@ define (require, exports, module) ->
         id: @id
         uri: uri
         vote: vote
-

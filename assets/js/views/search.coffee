@@ -27,7 +27,7 @@ define (require, exports, module) ->
         'start-index': 1
         alt: 'json'
         v: 2
-        'max-results': 10
+        'max-results': 5
       url = "#{youtube_base_url}?#{$.param params}"
       $.get url, (data) ->
         tracks = []
@@ -45,7 +45,7 @@ define (require, exports, module) ->
       SC.get '/search',
         q: str
         facet: 'model'
-        limit: 15
+        limit: 5
         linked_partitioning: 1
       , (songs) ->
         tracks = []
