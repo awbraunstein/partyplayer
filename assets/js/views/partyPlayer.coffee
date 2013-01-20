@@ -2,8 +2,11 @@ define (require, exports, module) ->
 
   $         = require 'jquery'
   _         = require 'underscore'
-  Backbone  = require 'backbone'
   utils     = require 'utils'
+  Backbone  = require 'backbone'
+
+  Search          = require 'models/search'
+  PartyClientView = require 'views/partyClient'
 
   require '/lib/js/soundcloud.js'
   require '/lib/js/swfobject.js'
@@ -16,18 +19,25 @@ define (require, exports, module) ->
   window.onYouTubePlayerReady = (playerId) ->
     window.player = document.getElementById("youtubeplayer")
 
-  exports.PartyPlayerView = Backbone.View.extend
+  exports.PartyPlayerView = PartyClientView.extend
+
+    template: 'partyPlayer'
 
     events:
       'click .play'  : 'play'
       'click .pause' : 'pause'
       'click .next'  : 'next'
+      'keyup #search': 'autoCompleteDebounce'
+      'click .search-result': 'requestTrack'
+      'click .vote'  : 'vote'
 
-    template: 'partyPlayer'
-    
     initialize: () ->
-      console.log 'player view init'
       this.initializeYoutube()
+
+      @searchModel = new Search()
+      @model.get('songs').on 'change:score', () => @onScoreChange()
+      @model.get('songs').on 'add', () => @renderTrackList()
+      @model.get('playing').on 'change', () => @render()
 
     initializeYoutube: () ->
       params = allowScriptAccess: "always"
@@ -94,7 +104,7 @@ define (require, exports, module) ->
           this.sound.position
         when "youtube"
           player.getCurrentTime() * 1000
-        
+
     render: (data) ->
       d = data || {}
       html = utils.tmpl @template, d
