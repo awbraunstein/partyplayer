@@ -35,14 +35,8 @@ define(function(require, exports, module) {
       };
       return swfobject.embedSWF(YT_URL, "youtube", "425", "356", "8", null, null, params, attrs);
     },
-    loadSpotifySong: function(uri) {
-      console.log(uri);
-      return this.render({
-        'spotify-uri': uri
-      });
-    },
     playNext: function() {
-      var btn, next;
+      var next;
       if (this.model.hasSongs()) {
         if (this.sound) {
           this.sound.stop();
@@ -57,32 +51,22 @@ define(function(require, exports, module) {
               return sound.play();
             }, this));
           case "youtube":
-            player.loadVideoById(next.uri, 0, "default");
+            player.loadVideoById(next.uri, 0, "small");
             player.playVideo();
-            return this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
-          case "spotify":
-            this.loadSpotifySong(next.uri);
-            btn = this.$('iframe').contents().find('.play-pause-btn');
-            btn.click();
             return this.playId = setTimeout(_.bind(this.playNext, this), next.duration);
         }
       }
     },
     pause: function() {
-      var btn;
       clearTimeout(this.playId);
       switch (this.model.get("playing").source) {
         case "soundcloud":
           return this.sound.pause();
         case "youtube":
           return player.pauseVideo();
-        case "spotify":
-          btn = this.$('iframe').contents().find('.play-pause-btn');
-          return btn.click();
       }
     },
     resume: function() {
-      var btn, elapsedTime, elapsedTimeString, minutes, remainingTime, seconds, _ref;
       if (this.model.get("playing")) {
         switch (this.model.get("playing").source) {
           case "soundcloud":
@@ -91,14 +75,6 @@ define(function(require, exports, module) {
           case "youtube":
             this.playId = setTimeout(_.bind(this.playNext, this), (player.getDuration() - player.getCurrentTime()) * 1000);
             return player.playVideo();
-          case "spotify":
-            btn = this.$('iframe').contents().find('.play-pause-btn');
-            elapsedTimeString = this.$('iframe').contents().find('.time-spent').contents();
-            _ref = elapsedTimeString.split(':'), minutes = _ref[0], seconds = _ref[1];
-            elapsedTime = ((parseInt(minutes) * 60) + parseInt(seconds)) * 1000;
-            remainingTime = this.model.get('playing').duration - elapsedTime;
-            this.playId = setTimeout(_bind(this.playNext, this), remainingTime);
-            return btn.click();
         }
       }
     },
@@ -114,6 +90,14 @@ define(function(require, exports, module) {
         clearTimeout(this.playId);
       }
       return this.playNext();
+    },
+    progess: function() {
+      switch (this.model.get("playing").source) {
+        case "soundcloud":
+          return this.sound.position;
+        case "youtube":
+          return player.getCurrentTime() * 1000;
+      }
     },
     render: function(data) {
       var d, html;

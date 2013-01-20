@@ -17,7 +17,6 @@ define (require, exports, module) ->
       # callback has arguments provider and results
       @searchYoutube str, callback
       @searchSoundcloud str, callback
-      @searchSpotify str, callback
 
     searchYoutube: (str, callback) ->
       # search youtube with the given string
@@ -57,16 +56,6 @@ define (require, exports, module) ->
             artist: song.user.username
             source: 'soundcloud'
         callback('soundcloud', tracks)
-
-    searchSpotify: (str, callback) ->
-      # Search spotify with the given string
-      spotify_base_url = 'http://spotify-search.herokuapp.com/search'
-      params =
-        q: str
-      url = "#{spotify_base_url}?#{$.param params}"
-      $.get url, (data) ->
-        song.source = 'spotify' for song in data
-        callback('spotify', data)
 
     render: () ->
       # this.$el.html(this.model.get 'name')

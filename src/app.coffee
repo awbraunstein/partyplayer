@@ -78,16 +78,6 @@
         Date.now()
 
     newParty.addSong
-      source: 'spotify'
-      title: 'Corinna'
-      artist: 'Phish'
-      duration: 274000
-      score: 2
-      uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
-      timestamp:
-        Date.now()
-
-    newParty.addSong
       source: 'soundcloud'
       score: 4
       uri: '/tracks/297'
@@ -134,8 +124,9 @@
       console.log data
 
       models.Party.findById socket.party, (err, party) ->
-        song = party.playNextSong data.uri
-        io.sockets.in(socket.party).emit 'playsong', data
+        if not err
+          song = party.playNextSong data.uri
+          io.sockets.in(socket.party).emit 'playsong', data
     )
 
     socket.on('addsong', (data) ->
