@@ -46,12 +46,12 @@ define (require, exports, module) ->
       uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
       
     playNext: () ->
-      console.log "here"
       if this.model.hasSongs()
         # Stop all existing music
         if this.sound
           this.sound.stop()
         player.stopVideo()
+        next = this.model.nextSong()
         switch next.source
           when "Soundcloud"
             SC.stream next.uri, (sound) =>

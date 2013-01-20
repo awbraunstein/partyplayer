@@ -6,7 +6,7 @@ define (require, exports, module) ->
 
   SOCKET_PORT = 8080
 
-  exports.partyClient = Backbone.Model.extend
+  exports.PartyClient = Backbone.Model.extend
 
     idAttribute: '_id'
 
