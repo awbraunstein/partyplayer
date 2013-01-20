@@ -113,11 +113,8 @@
       # data is {song}
       console.log data
 
-      party = Party.findById socket.party
-
-      party.
-
-      io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
+      models.Party.findById socket.party, (err, party) ->
+        io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
     )
 
     socket.on('addsong', (data) ->
@@ -125,17 +122,16 @@
       # data is {id: room_id, type: media_type, uri: url/uri}
       console.log data
 
-      party = Party.findById socket.party
+      models.Party.findById socket.party, (err, party) ->
+        song = party.addSong
+          type: data.type
+          score: 0
+          uri: data.uri
+          timestamp: Date.now()
 
-      song = party.addSong
-        type: data.type
-        score: 0
-        uri: data.uri
-        timestamp: Date.now()
-
-      # add the new song to the server
-      # then send out the update to everyone
-      io.sockets.in(socket.party).emit 'addsong', 'SERVER', song
+        # add the new song to the server
+        # then send out the update to everyone
+        io.sockets.in(socket.party).emit 'addsong', 'SERVER', song
     )
 
     socket.on('vote', (data) ->
@@ -143,16 +139,15 @@
       # data is {id: room_id, uri: url/uri, vote: up/down}
       console.log data
 
-      party = Party.findById socket.party
+      models.Party.findById socket.party, (err, party) ->
+        song = if data.vote is 'up'
+          party.upvoteSong data.uri
+        else
+          party.downvoteSong data.uri
 
-      song = if data.vote is 'up'
-        party.upvoteSong data.uri
-      else
-        party.downvoteSong data.uri
-
-      # add the vote to the server
-      # send out the update to everyone
-      io.sockets.in(socket.party).emit 'vote', 'SERVER', song
+        # add the vote to the server
+        # send out the update to everyone
+        io.sockets.in(socket.party).emit 'vote', 'SERVER', song
     )
 
     socket.on('disconnect', () ->
