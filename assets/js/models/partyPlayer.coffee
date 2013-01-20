@@ -2,8 +2,10 @@ define (require, exports, module) ->
 
   _         = require 'underscore'
   $         = require 'jquery'
-  Backbone  = require 'backbone'
   io        = require '/lib/js/socket.io.js'
+  Backbone  = require 'backbone'
+  Track     = require 'models/track'
+  TrackList = require 'collections/trackList'
 
   SOCKET_PORT = 8080
 
@@ -15,7 +17,19 @@ define (require, exports, module) ->
       "/party/#{@id}"
 
     initialize: () ->
-      # Create socket.io actions
+      # use Track models and collections for attributes
+      track   = new Track @get('playing')
+      played  = new TrackList @get('played')
+      songs   = new TrackList @get('songs')
+      @set 'playing', track
+      @set 'played', played
+      @set 'songs', songs
+
+      console.log "currently playing #{track.get 'title'}..."
+      @initSocketActions()
+
+    # Register socket.io actions
+    initSocketActions: () ->
       @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
       @socket.emit 'createparty', id: @id
 
@@ -27,13 +41,23 @@ define (require, exports, module) ->
     hasSongs: () ->
       this.get('songs').length isnt 0
 
+    # Pick next top rated song and play it
     nextSong: () ->
-      # Pick next top rated song and play it
       next = _.max(this.get("songs"), (s) -> s.score)
       this.get("played").push(this.get("playing"))
       this.set("songs", _.select(this.get("songs"), (song) -> song isnt next))
       this.set("playing", next)
 
       @socket.emit('playsong', next)
-
       next
+
+    # Send a song request to the server
+    sendNewRequest: (track) ->
+      @socket.emit 'addsong', track
+
+    # Send a vote request to the server
+    voteSong: (uri, vote) ->
+      @socket.emit 'vote',
+        id: @id
+        uri: uri
+        vote: vote

@@ -1,7 +1,52 @@
 <div id="party-player">
 
-  <button class='play'>play</button>
-  <button class='pause'>pause</button>
-  <button class='next'>next</button>
+  <div class='sidebar'>
+    <input id='search' type='text' placeholder='Search for songs...'
+            autofocus='autofocus'/>
+    <ul id='search-results'>
+      <li class='search-result'>
+        <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+        <div class='meta'>
+          <p class='track-title'>Gratisfaction</p>
+          <p class='track-artist'>The Strokes</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div id='main-player'>
+    <div id='player-header'>
+      <button class='play'>play</button>
+      <button class='pause'>pause</button>
+      <button class='next'>next</button>
+    </div>
+
+    {{#with previous}}
+    <div class='previous track-item'>
+      <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+      <div class='meta'>
+        <div class='votes'>Last Played</div>
+        <span class='time'>3:32</span>
+        <p class='track-title'>Gratisfaction</p>
+        <p class='track-artist'>The Strokes</p>
+      </div>
+    </div>
+    {{/with}}
+
+    {{#with playing}}
+    <div class='now-playing track-item'>
+      <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
+      <div class='meta'>
+        <div class='votes'>Now Playing</div>
+        <span class='time'>3:32</span>
+        <p class='track-title'>Metabolism</p>
+        <p class='track-artist'>The Strokes</p>
+      </div>
+    </div>
+    {{/with}}
+
+    <div class='request-divider'>Up Next</div>
+    <ul id='request-list'></ul>
+  </div>
 
 </div>

@@ -2,63 +2,37 @@ define (require, exports, module) ->
 
   $          = require 'jquery'
   _          = require 'underscore'
+  utils     = require 'utils'
   Backbone   = require 'backbone'
-  
-  require '/lib/js/soundcloud.js'
 
-  exports.search = Backbone.View.extend
+  SEARCH_RESULT_SELECTOR = '#search-results'
 
-    initialize: () ->
-      console.log 'created search view'
-      SC.initialize
-        client_id: '0bc80f756a59625ed11e9791f107004a'
+  # Extend this view to add search capability to your backbone view
+  exports.SearchView = Backbone.View.extend
 
-    search: (str, callback) ->
-      # callback has arguments provider and results
-      @searchYoutube str, callback
-      @searchSoundcloud str, callback
+    autoCompleteDebounce: (e) ->
+      # Check if key up was a letter or backspace
+      if (e.keyCode >= 65 and e.keyCode <= 90) or e.keyCode == 8
+        _.debounce @autoCompleteSearch(e), 500
 
-    searchYoutube: (str, callback) ->
-      # search youtube with the given string
-      youtube_base_url = 'https://gdata.youtube.com/feeds/api/videos'
-      params =
-        q: str
-        orderby: 'relevance'
-        'start-index': 1
-        alt: 'json'
-        v: 2
-        'max-results': 5
-      url = "#{youtube_base_url}?#{$.param params}"
-      $.get url, (data) ->
-        tracks = []
-        for video in data.feed.entry
-          tracks.push
-            uri: video.media$group.yt$videoid.$t
-            duration: parseInt(video.media$group.yt$duration.seconds) * 1000
-            title: video.title.$t
-            source: 'youtube'
-            album_art: video['media$group']['media$thumbnail'][0].url
-        callback('youtube', tracks)
+    autoCompleteSearch: (e) ->
+      $results = @$(SEARCH_RESULT_SELECTOR)
+      partyID  = @model.get 'id'
 
-    searchSoundcloud: (str, callback) ->
-      # Search soundcloud with the given string
-      SC.get '/search',
-        q: str
-        facet: 'model'
-        limit: 5
-        linked_partitioning: 1
-      , (songs) ->
-        tracks = []
-        for song in songs.collection when song.kind is 'track' and song.streamable
-          tracks.push
-            uri: song.uri
-            duration: song.duration
-            title: song.title
-            artist: song.user.username
-            source: 'soundcloud'
-            album_art: song.artwork_url
-        callback('soundcloud', tracks)
+      $results.empty()
+      query = @$('#search').val()
+      if query.length < 4
+        return
 
-    render: () ->
-      # this.$el.html(this.model.get 'name')
-      return this
+      @searchModel.search query, (source, results) ->
+        # Render each search result in the results div
+        # Because of the excessive time it would take to create Backbone views,
+        # we use raw strings here instead.
+        for res in results
+          if _.isObject res
+            html = utils.tmpl 'searchResult', res
+            $results.append html
+      return null
+
+    clearSearch: (e) ->
+      @$(SEARCH_RESULT_SELECTOR).empty()
