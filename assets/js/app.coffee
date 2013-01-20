@@ -18,7 +18,8 @@ requirejs.config
 
 define (require, exports, module) ->
 
-  PARTY_NAME_REGEX = /party\/(.+)/
+  PARTY_NAME_REGEX  = /party\/(.+)/
+  NEW_PARTY_REGEX   = /\/new$/
 
   # Module dependencies
   _         = require 'underscore'
@@ -53,29 +54,17 @@ define (require, exports, module) ->
     $partyPlayer.empty().append playerView.$el
     playerView.render()
 
-  sampleSong =
-    source: 'Youtube'
-    score: 4
-    uri: 'KlujizeNNQM'
-    duration: 5000
-    timestamp:
-      Date.now()
+  initPartyForm = (position) ->
+    $('input[name=latitude]').val(position.coords.latitude)
+    $('input[name=longitude]').val(position.coords.longitude)
+    return null
 
-  sampleSong2 =
-    source: 'Soundcloud'
-    score: 3
-    uri: '/tracks/297'
-    duration: 399151
-    timestamp:
-      Date.now()
-
-  sampleParty =
-    name: 'rad party'
-    loc: [39, -75]
-    playing: sampleSong
-    songs: [sampleSong,sampleSong2]
+  initSpinner = () ->
+    target  = document.getElementById('spin')
+    spinner = new Spinner({}).spin(target)
 
   init = () ->
+    initSpinner()
     matched = window.location.pathname.match PARTY_NAME_REGEX
     if matched
       server.getPartyInfo matched[1], (partyData) ->
@@ -90,6 +79,10 @@ define (require, exports, module) ->
 
     navigator.geolocation.getCurrentPosition (position) ->
       console.log 'finding nearby parties...'
+      if window.location.pathname.match NEW_PARTY_REGEX
+        $ -> initPartyForm position
+        return
+
       server.findParties position.coords, (parties) ->
         # TODO: select party
         if parties?

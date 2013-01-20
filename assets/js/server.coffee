@@ -4,6 +4,7 @@ define (require, exports, module) ->
   $  = require 'jquery'
 
   FIND_PARTIES_PATH = '/nearby'
+  CREATE_PARTY_PATH = '/create'
 
   server =
 

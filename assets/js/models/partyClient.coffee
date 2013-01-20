@@ -3,8 +3,10 @@ define (require, exports, module) ->
   _         = require 'underscore'
   $         = require 'jquery'
   Backbone  = require 'backbone'
+  io        = require '/lib/js/socket.io.js'
   Track     = require 'models/track'
   TrackList = require 'collections/trackList'
+
 
   SOCKET_PORT = 8080
 
@@ -31,7 +33,7 @@ define (require, exports, module) ->
 
     # Register socket.io actions
     initSocketActions: () ->
-      @socket = io.connect "http://localhost:#{SOCKET_PORT}"
+      @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
 
       @socket.on 'connect', () =>
         @socket.emit 'joinparty',
@@ -51,7 +53,7 @@ define (require, exports, module) ->
         # Find the song with the given uri among the 'songs' collection
         nextTrack = @get('songs').find (song) ->
           song.get 'uri' == next.uri
-        @played.push (@get 'playing')
+        @get('played').push (@get 'playing')
         @set 'playing', nextTrack
         @get('songs').remove nextTrack
 
@@ -64,8 +66,7 @@ define (require, exports, module) ->
 
     # Send a song request to the server
     sendNewRequest: (track) ->
-      @socket.emit 'addsong', _.extend track,
-        id: @id
+      @socket.emit 'addsong', track
 
     # Send a vote request to the server
     voteSong: (uri, vote) ->

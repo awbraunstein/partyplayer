@@ -26,8 +26,10 @@ define (require, exports, module) ->
       @searchView = new SearchView()
       @model.get('songs').on 'change:score', () => @onScoreChange()
       @model.get('songs').on 'add', () => @renderTrackList()
+      @model.get('playing').on 'change', () => @render()
 
     renderTrackList: () ->
+      console.log 'rendering track list'
       $list = @$(TRACK_LIST_SELECTOR)
       $list.empty()
 
@@ -73,7 +75,7 @@ define (require, exports, module) ->
       return null
 
     clearSearch: (e) ->
-      @$(SEARCH_RESULT_SELECTOR).empty()      
+      @$(SEARCH_RESULT_SELECTOR).empty()
 
     requestTrack: (e) ->
       e.preventDefault()
@@ -87,7 +89,7 @@ define (require, exports, module) ->
         album_art: $el.attr 'data-art'
       @model.sendNewRequest t
       html = utils.tmpl 'trackItem', t
-      @$(TRACK_LIST_SELECTOR).append html
+      # @$(TRACK_LIST_SELECTOR).append html
       @clearSearch()
 
     vote: (e) ->
