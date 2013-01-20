@@ -16,9 +16,12 @@ define (require, exports, module) ->
     initialize: () ->
       # Create socket.io actions
       @socket = io.connect "http://localhost:#{SOCKET_PORT}"
+      @socket.emit 'createparty', id: @id
 
-      @socket.on 'addsong', (song) ->
-        this.get('songs').push(data)
+      @socket.on 'addsong', (song) =>
+        console.log '******* got new request ********'
+        console.log song
+        this.get('songs').push(song)
 
     hasSongs: () ->
       this.get('songs').length isnt 0
