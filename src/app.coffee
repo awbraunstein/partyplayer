@@ -135,12 +135,8 @@
       console.log data
 
       models.Party.findById socket.party, (err, party) ->
-        song = party.addSong
-          source: data.source
+        song = party.addSong _.extend data,
           score: 0
-          uri: data.uri
-          title: data.title
-          artist: data.artist
 
         # add the new song to the server
         # then send out the update to everyone
