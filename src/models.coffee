@@ -23,6 +23,8 @@
     songs: [Song]
     played: [Song]
 
+  partySchema.set 'toJSON',
+    getters: true
   partySchema.index
     loc: "2d"
 

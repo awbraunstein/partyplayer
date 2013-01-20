@@ -18,6 +18,8 @@ requirejs.config
 
 define (require, exports, module) ->
 
+  PARTY_NAME_REGEX = /party\/(.+)/
+
   # Module dependencies
   _         = require 'underscore'
   $         = require 'jquery'
@@ -71,8 +73,11 @@ define (require, exports, module) ->
     songs: [sampleSong,sampleSong2]
 
   init = () ->
-    if window.PDATA # means we're on a /party/:id route, so party admin
-      $ -> initPlayer window.PDATA.party
+    matched = window.location.pathname.match PARTY_NAME_REGEX
+    if matched
+      server.getPartyInfo matched[1], (partyData) ->
+        console.log partyData
+        $ -> initPlayer partyData
       return
 
     # Otherwise, find the closest party and join it as a client

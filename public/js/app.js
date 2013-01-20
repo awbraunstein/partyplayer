@@ -21,7 +21,8 @@ requirejs.config({
   }
 });
 define(function(require, exports, module) {
-  var $, Backbone, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPlayer, sampleParty, sampleSong, sampleSong2, server, utils, _;
+  var $, Backbone, PARTY_NAME_REGEX, PartyClient, PartyClientView, PartyPlayer, PartyPlayerView, init, initClient, initPlayer, sampleParty, sampleSong, sampleSong2, server, utils, _;
+  PARTY_NAME_REGEX = /party\/(.+)/;
   _ = require('underscore');
   $ = require('jquery');
   Backbone = require('backbone');
@@ -70,9 +71,14 @@ define(function(require, exports, module) {
     songs: [sampleSong, sampleSong2]
   };
   init = function() {
-    if (window.PDATA) {
-      $(function() {
-        return initPlayer(window.PDATA.party);
+    var matched;
+    matched = window.location.pathname.match(PARTY_NAME_REGEX);
+    if (matched) {
+      server.getPartyInfo(matched[1], function(partyData) {
+        console.log(partyData);
+        return $(function() {
+          return initPlayer(partyData);
+        });
       });
       return;
     }

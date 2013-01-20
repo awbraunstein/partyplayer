@@ -47,12 +47,13 @@
   # Routes
 
   # GET -> render pages
-  app.get '/',        router.party.index
-  app.get '/a/:id',   router.party.partyAdmin
-  app.get '/:id',     router.party.party
+  app.get '/',            router.party.index
+  app.get '/new',         router.party.newParty
+  app.get '/party/:name', router.party.playParty
 
   # POST -> request data
-  app.post '/nearby', router.party.findParties
+  app.post '/nearby',   router.party.findParties
+  app.post '/create',   router.party.createParty
 
   # --------------------------------------------------------------------------
   # Start Server

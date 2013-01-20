@@ -15,4 +15,12 @@ define (require, exports, module) ->
       , callback
       return null
 
+    getPartyInfo: (name, callback) ->
+      $.ajax
+        url: "/party/#{name}"
+        data: null
+        success: callback
+        dataType: 'json'
+      return null
+
   module.exports = server
