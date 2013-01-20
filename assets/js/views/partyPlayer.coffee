@@ -3,35 +3,45 @@ define (require, exports, module) ->
   $         = require 'jquery'
   _         = require 'underscore'
   Backbone  = require 'backbone'
-  SC        = require '/lib/js/soundcloud.js'
+
+  require '/lib/js/soundcloud.js'
 
   SC.initialize client_id: '0bc80f756a59625ed11e9791f107004a'
 
   exports.PartyPlayerView = Backbone.View.extend
+
+    events:
+      'click .play'  : 'play'
+      'click .pause' : 'pause'
+      'click .next'  : 'next'
     
     initialize: () ->
       console.log 'player view init'
 
     playNext: () ->
+      console.log this.model.get("songs")
       if this.model.get("songs").length isnt 0
-        # TODO notify the server we've changed songs
+        # Stop all existing music
+        if this.sound
+          this.sound.stop()
+        # player.stopVideo()
         # Pick next top rated song and play it
-        next = _.max this.model.get("songs"), (s) -> s.rating
+        next = _.max(this.model.get("songs"), (s) -> s.score)
+        # TODO notify the server we've changed songs
+        this.model.set("songs", _.select(this.model.get("songs"), (song) -> song isnt next))
         this.playing = next
         switch next.source
           when "Soundcloud"
-            # Assuming we have the SC object and it's initialized. The same
-            # thing is needed by search, so I assume we'll have this
-            SC.stream next.uri, (sound) ->
+            SC.stream next.uri, (sound) =>
               this.sound = sound
-              this.playId = setTimeout(next.duration, playNext)
+              this.playId = setTimeout(next.duration, this.playNext)
               sound.play()
           when "Youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
             player.loadVideoById(next.uri, 0, "default")
             player.playVideo()
-            this.playId = setTimeout(next.duration, playNext)
+            this.playId = setTimeout(next.duration, this.playNext)
           when "Spotify"
             null
             
@@ -50,10 +60,10 @@ define (require, exports, module) ->
       if this.playing
         switch this.playing.source
           when "Soundcloud"
-            this.playId = setTimeout(this.sound.duration - this.sound.position)
+            this.playId = setTimeout(this.sound.duration - this.sound.position, this.playNext)
             this.sound.play()
           when "Youtube"
-            this.playId = setTimeout((player.getDuration() - player.getCurrentTime()) * 1000)
+            this.playId = setTimeout((player.getDuration() - player.getCurrentTime()) * 1000, this.playNext)
             player.playVideo()
           when "Spotify"
             null
@@ -63,7 +73,12 @@ define (require, exports, module) ->
         this.resume()
       else
         this.playNext()
-                                                        
+
+    next: () ->
+      if this.playId
+        clearTimeout(this.playId)
+      this.playNext()
+
     render: () ->
-      this.$el.html(this.model.get 'name')
+      this.$el.html("<button class='play'>play</button><button class='pause'>pause</button><button class='next'>next</button>")
       return this
