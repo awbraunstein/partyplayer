@@ -6,7 +6,7 @@ define (require, exports, module) ->
   utils     = require 'utils'
 
   require '/lib/js/soundcloud.js'
-  require '/lib/js/swfobject.js'  
+  require '/lib/js/swfobject.js'
 
   SC.initialize client_id: '0bc80f756a59625ed11e9791f107004a'
 
@@ -50,20 +50,19 @@ define (require, exports, module) ->
           when "soundcloud"
             SC.stream next.uri, (sound) =>
               this.sound = sound
-              this.playId = setTimeout(this.playNext, next.duration)
+              this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
               sound.play()
           when "youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
             player.loadVideoById(next.uri, 0, "default")
             player.playVideo()
-            this.playId = setTimeout(this.playNext, next.duration)
+            this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
           when "spotify"
             @loadSpotifySong next.uri
             btn = @$('iframe').contents().find('.play-pause-btn')
             btn.click()
-            this.playID = setTimeout(this.playNext, next.duration)
-            
+            this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
             
     pause: () ->
       clearTimeout(this.playId)
@@ -82,10 +81,10 @@ define (require, exports, module) ->
       if this.model.get("playing")
         switch this.model.get("playing").source
           when "soundcloud"
-            this.playId = setTimeout(this.playNext, this.sound.duration - this.sound.position)
+            this.playId = setTimeout(_.bind(this.playNext, this), this.sound.duration - this.sound.position)
             this.sound.play()
           when "youtube"
-            this.playId = setTimeout this.playNext,
+            this.playId = setTimeout _.bind(this.playNext, this),
               (player.getDuration() - player.getCurrentTime()) * 1000
             player.playVideo()
           when "spotify"
@@ -94,7 +93,7 @@ define (require, exports, module) ->
             [minutes, seconds] = elapsedTimeString.split(':')
             elapsedTime = ((parseInt(minutes) * 60) + parseInt(seconds)) * 1000
             remainingTime = this.model.get('playing').duration - elapsedTime
-            this.playId = setTimeout this.playNext, remainingTime
+            this.playId = setTimeout _bind(this.playNext, this), remainingTime
             btn.click()
 
     play: () ->
