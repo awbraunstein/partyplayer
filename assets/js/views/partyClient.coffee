@@ -65,8 +65,8 @@ define (require, exports, module) ->
         # we use raw strings here instead.
         for res in results
           if _.isObject res
-            $results.append "<a class='search-result' href='#{res.uri}'
-                              data-source='#{res.source}'>
+            $results.append "<a class='search-result' data-uri='#{res.uri}'
+                              data-source='#{res.source}' href='#'>
                               #{res.title} - #{res.artist}
                             </a>"
       return null
@@ -75,5 +75,5 @@ define (require, exports, module) ->
       e.preventDefault()
       $el     = $(e.currentTarget)
       source  = $el.attr 'data-source'
-      uri     = $el.attr 'href'
+      uri     = $el.attr 'data-uri'
       @model.sendNewRequest source, uri
