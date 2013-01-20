@@ -70,19 +70,22 @@
 
     newParty.addSong
       source: 'youtube'
+      title: "RickRoll'D"
       score: 3
-      uri: 'KlujizeNNQM'
-      duration: 5000
+      uri: 'oHg5SJYRHA0'
+      duration: 213000
       timestamp:
         Date.now()
-        
+
     newParty.addSong
-      title:"Corinna"
-      artist:"Phish"
+      source: 'spotify'
+      title: 'Corinna'
+      artist: 'Phish'
       duration: 274000
       score: 2
       uri: "spotify:track:0KImAx8VSImr3bzE0YyMcs"
-      source: 'spotify'
+      timestamp:
+        Date.now()
 
     newParty.addSong
       source: 'soundcloud'
@@ -91,7 +94,7 @@
       duration: 399151
       timestamp:
         Date.now()
-      
+
   # generateParty()
 
   # --------------------------------------------------------------------------

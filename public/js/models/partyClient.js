@@ -26,14 +26,12 @@ define(function(require, exports, module) {
     initSocketActions: function() {
       this.socket = io.connect("http://localhost:" + SOCKET_PORT);
       this.socket.on('connect', __bind(function() {
-        console.log('Connecting...');
         return this.socket.emit('joinparty', {
           id: this.id
         });
       }, this));
       this.socket.on('populate', __bind(function(party) {
-        console.log('Got a (socket) party!');
-        return console.log(party);
+        return console.log("populate: " + party);
       }, this));
       this.socket.on('playsong', __bind(function(next) {
         var nextTrack;

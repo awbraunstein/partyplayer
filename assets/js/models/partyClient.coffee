@@ -33,13 +33,11 @@ define (require, exports, module) ->
       @socket = io.connect "http://localhost:#{SOCKET_PORT}"
 
       @socket.on 'connect', () =>
-        console.log 'Connecting...'
         @socket.emit 'joinparty',
           id: @id
 
       @socket.on 'populate', (party) =>
-        console.log 'Got a (socket) party!'
-        console.log party
+        console.log "populate: #{party}"
 
       @socket.on 'playsong', (next) =>
         console.log '***** play new song *****'
