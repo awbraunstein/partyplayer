@@ -129,7 +129,7 @@
 
       party = Party.findById socket.party
 
-      party.
+      song = party.playNextSong data.uri
 
       io.sockets.in(socket.party).emit 'playsong', 'SERVER', data
     )
