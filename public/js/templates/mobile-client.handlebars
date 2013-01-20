@@ -2,40 +2,34 @@
   <h3>{{name}}</h3>
   <input id='search' type='text' placeholder='Search for songs...'
           autofocus='autofocus'/>
-  <ul id='search-results'>
-    <li class='search-result'>
-      <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
-      <div class='meta'>
-        <p class='track-title'>Gratisfaction</p>
-        <p class='track-artist'>The Strokes</p>
-      </div>
-    </li>
-  </ul>
+  <ul id='search-results'></ul>
 </div>
 
-{{#with previous}}
-<div class='previous track-item'>
-  <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
-  <div class='meta'>
-    <div class='votes'>Last Played</div>
-    <span class='time'>3:32</span>
-    <p class='track-title'>Gratisfaction</p>
-    <p class='track-artist'>The Strokes</p>
+{{#if previous}}
+  {{#with previous}}
+  <div class='previous track-item'>
+    <img class='album-art' src='{{album_art}}' />
+    <div class='meta'>
+      <div class='votes'>Last Played</div>
+      <p class='track-title'>{{title}}</p>
+      <p class='track-artist'>{{artist}}</p>
+    </div>
   </div>
-</div>
-{{/with}}
+  {{/with}}
+{{/if}}
 
-{{#with playing}}
-<div class='now-playing track-item'>
-  <img class='album-art' src='http://www.thestrokes.com/sites/thestrokes/files/imagecache/218x218/The-Strokes-ANGLES.jpg' />
-  <div class='meta'>
-    <div class='votes'>Now Playing</div>
-    <span class='time'>3:32</span>
-    <p class='track-title'>Metabolism</p>
-    <p class='track-artist'>The Strokes</p>
+{{#if playing}}
+  {{#with playing}}
+  <div class='now-playing track-item'>
+    <img class='album-art' src='{{album_art}}' />
+    <div class='meta'>
+      <div class='votes'>Now Playing</div>
+      <p class='track-title'>{{title}}</p>
+      <p class='track-artist'>{{artist}}</p>
+    </div>
   </div>
-</div>
-{{/with}}
+  {{/with}}
+{{/if}}
 
 <div class='request-divider'>Up Next</div>
 <ul id='request-list'></ul>
