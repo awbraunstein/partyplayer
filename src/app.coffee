@@ -124,8 +124,9 @@
       console.log data
 
       models.Party.findById socket.party, (err, party) ->
-        song = party.playNextSong data.uri
-        io.sockets.in(socket.party).emit 'playsong', data
+        if not err
+          song = party.playNextSong data.uri
+          io.sockets.in(socket.party).emit 'playsong', data
     )
 
     socket.on('addsong', (data) ->

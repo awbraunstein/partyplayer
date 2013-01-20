@@ -51,7 +51,7 @@ define (require, exports, module) ->
           when "youtube"
             # Assuming we have a player object, which should come from some
             # embedded swf in a hidden div
-            player.loadVideoById(next.uri, 0, "default")
+            player.loadVideoById(next.uri, 0, "small")
             player.playVideo()
             this.playId = setTimeout(_.bind(this.playNext, this), next.duration)
             
