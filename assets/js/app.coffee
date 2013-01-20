@@ -18,6 +18,8 @@ requirejs.config
 
 define (require, exports, module) ->
 
+  PARTY_NAME_REGEX = /party\/(.+)/
+
   # Module dependencies
   _         = require 'underscore'
   $         = require 'jquery'
@@ -25,26 +27,28 @@ define (require, exports, module) ->
   utils     = require 'utils'
   server    = require 'server'
 
-  Party           = require 'models/party'
+  PartyClient     = require 'models/partyClient'
+  PartyPlayer     = require 'models/partyPlayer'
   PartyClientView = require 'views/partyClient'
   PartyPlayerView = require 'views/partyPlayer'
-  SearchView      = require 'views/search'
 
   initClient = (party) ->
     $partyClient = $('#party-client')
 
-    # clientView = new PartyClientView
-    #   model: new Party(party)
-
-    clientView = new PartyPlayerView model: new Party(party)
+    clientView = new PartyClientView
+      model: new PartyClient party
 
     $partyClient.empty().append clientView.$el
     clientView.render()
 
-    searchView = new SearchView()
-    searchView.search 'Trey anastasio', (source, results) ->
-      console.log source
-      console.log results
+  initPlayer = (party) ->
+    $partyPlayer = $('#party-player')
+
+    playerView = new PartyPlayerView
+      model: new PartyPlayer party
+
+    $partyPlayer.empty().append playerView.$el
+    playerView.render()
 
   sampleSong =
     source: 'Soundcloud'
@@ -69,21 +73,27 @@ define (require, exports, module) ->
     songs: [sampleSong,sampleSong2]
 
   init = () ->
-    $ -> initClient sampleParty
-    # unless 'geolocation' of navigator
-    #   # TODO: better alert
-    #   console.log 'not supported in browser'
+    matched = window.location.pathname.match PARTY_NAME_REGEX
+    if matched
+      server.getPartyInfo matched[1], (partyData) ->
+        console.log partyData
+        $ -> initPlayer partyData
+      return
 
-    # navigator.geolocation.getCurrentPosition (position) ->
-    #   console.log 'finding nearby parties...'
-    #   server.findParties position.coords, (parties) ->
-    #     console.log parties
-    #     # TODO: use real data
-    #     $ -> initClient sampleParty
+    # Otherwise, find the closest party and join it as a client
+    unless 'geolocation' of navigator
+      # TODO: better alert
+      console.log 'not supported in browser'
+
+    navigator.geolocation.getCurrentPosition (position) ->
+      console.log 'finding nearby parties...'
+      server.findParties position.coords, (parties) ->
+        # TODO: select party
+        if parties?
+          $ -> initClient parties[0]
+        else
+          console.log 'No parties!'
 
   init()
-
-  $ ->
-    console.log 'DOM ready'
 
   return null

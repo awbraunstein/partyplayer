@@ -1,11 +1,19 @@
 # Controller for PARTY page routes
 (->
 
+  utils = require '../utils'
   Party = require('./../models').Party
 
+  # GET -> root
   exports.index = (req,res) ->
     res.render 'index', title: 'Join a party'
 
+  # GET -> party form
+  exports.newParty = (req, res) ->
+    res.render 'new_party',
+      title: 'New Party'
+
+  # POST
   exports.createParty = (req, res) ->
     p = new Party
       name:   req.params.name
@@ -15,24 +23,21 @@
       if not err
         res.send party
 
-  exports.partyAdmin = (req, res) ->
-    Party.findById req.params.id, (err, p) ->
-      if err
-        res.send 404, "No such party found"
-      else
-        res.render 'party_admin',
-          title: 'Party admin'
-          party: p
+  # GET
+  exports.playParty = (req, res) ->
+    if req.xhr
+      Party.findOne
+        name: req.params.name
+      , (err, p) ->
+        if err or not p?
+          res.send 404, "No such party found"
+        else
+          res.send p
+    else
+      res.render 'party',
+        title: 'Party'
 
-  exports.party = (req, res) ->
-    Party.findById req.params.id, (err, p) ->
-      if err
-        res.send 404, "No such party found"
-      else
-        res.render 'party',
-          title: 'View party'
-          party: p
-
+  # POST -> nearby parties
   exports.findParties = (req, res) ->
     loc = [
       req.body.latitude
@@ -40,8 +45,8 @@
     ]
 
     Party.find
-      $within:
-        $center: [loc, 0.1]
+      loc:
+        $near: loc
     , (err, ps) ->
       if err
         res.send []
