@@ -10,4 +10,4 @@ define (require, exports, module) ->
     model: Track
 
     comparator: (track) ->
-      track.get 'score'
+      -track.get('score')
