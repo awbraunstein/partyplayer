@@ -16,12 +16,16 @@
   # POST
   exports.createParty = (req, res) ->
     p = new Party
-      name:   req.params.name
-      loc:    [req.params.latitude, req.params.longitude]
+      name:   req.body.name
+      loc:    [req.body.latitude, req.body.longitude]
       songs:  []
     p.save (err, party) ->
-      if not err
-        res.send party
+      if err
+        console.log '*************'
+        console.log err
+        res.send '500', 'Unable to create room'
+      else
+        res.redirect "/party/#{party.name}"
 
   # GET
   exports.playParty = (req, res) ->

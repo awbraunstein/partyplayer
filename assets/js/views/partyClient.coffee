@@ -74,7 +74,7 @@ define (require, exports, module) ->
       return null
 
     clearSearch: (e) ->
-      @$(SEARCH_RESULT_SELECTOR).empty()      
+      @$(SEARCH_RESULT_SELECTOR).empty()
 
     requestTrack: (e) ->
       e.preventDefault()
