@@ -40,8 +40,13 @@ define (require, exports, module) ->
         view.render()
 
     render: () ->
-      html = utils.tmpl @template, _.extend @model.toJSON(),
-        previous: @model.get('played').last()
+      data = @model.toJSON()
+      if @model.get('played')
+        data.previous = @model.get('played').last().toJSON()
+      if @model.get('playing')
+        data.playing = @model.get('playing').toJSON()
+
+      html = utils.tmpl @template, data
       @$el.html html
       @renderTrackList()
       return this

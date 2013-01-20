@@ -32,6 +32,10 @@ define (require, exports, module) ->
     initSocketActions: () ->
       @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
       @socket.emit 'createparty', id: @id
+      
+      @socket.on 'vote', (song) =>
+        @get('songs').each (s) ->
+          s.set('score', song.score) if s.get('uri') is song.uri
 
       @socket.on 'addsong', (song) =>
         console.log '******* got new request ********'

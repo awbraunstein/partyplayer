@@ -108,6 +108,10 @@ define (require, exports, module) ->
         when "youtube"
           player.getCurrentTime() * 1000
 
+    onScoreChange: (song) ->
+      @model.get('songs').sort()
+      @renderTrackList()
+
     renderTrackList: () ->
       $list = @$(TRACK_LIST_SELECTOR)
       $list.empty()
