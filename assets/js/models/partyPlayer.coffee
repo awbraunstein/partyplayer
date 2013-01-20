@@ -48,13 +48,22 @@ define (require, exports, module) ->
     # Pick next top rated song and play it
     nextSong: () ->
       songs = @get('songs')
-      next = songs.max (s) -> s.get('score')
-      console.log next
-      @get("played").push @get("playing")
-      @set("songs", songs.select (song) -> song isnt next)
-      @set("playing", next)
+      unless songs
+        alert 'no songs to play!'
+        return
+      if _.isArray songs
+        next = _.max(songs, (s) -> s.get('score'))
+        @get("played").push @get("playing")
+        @set("songs", _.select(songs, (song) -> song isnt next))
+        @set("playing", next)
+      else
+        next = songs.max (s) -> s.get('score')
+        @get("played").push @get("playing")
+        @set("songs", songs.select (song) -> song isnt next)
+        @set("playing", next)
 
-      @socket.emit('playsong', next)
+      console.log next
+      @socket.emit('playsong', next.attributes)
       next
 
     # Send a song request to the server

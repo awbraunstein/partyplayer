@@ -48,16 +48,31 @@ define(function(require, exports, module) {
     nextSong: function() {
       var next, songs;
       songs = this.get('songs');
-      next = songs.max(function(s) {
-        return s.get('score');
-      });
+      if (!songs) {
+        alert('no songs to play!');
+        return;
+      }
+      if (_.isArray(songs)) {
+        next = _.max(songs, function(s) {
+          return s.get('score');
+        });
+        this.get("played").push(this.get("playing"));
+        this.set("songs", _.select(songs, function(song) {
+          return song !== next;
+        }));
+        this.set("playing", next);
+      } else {
+        next = songs.max(function(s) {
+          return s.get('score');
+        });
+        this.get("played").push(this.get("playing"));
+        this.set("songs", songs.select(function(song) {
+          return song !== next;
+        }));
+        this.set("playing", next);
+      }
       console.log(next);
-      this.get("played").push(this.get("playing"));
-      this.set("songs", songs.select(function(song) {
-        return song !== next;
-      }));
-      this.set("playing", next);
-      this.socket.emit('playsong', next);
+      this.socket.emit('playsong', next.attributes);
       return next;
     },
     sendNewRequest: function(track) {
