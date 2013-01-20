@@ -31,7 +31,7 @@ define (require, exports, module) ->
 
     # Register socket.io actions
     initSocketActions: () ->
-      @socket = io.connect "http://localhost:#{SOCKET_PORT}"
+      @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
 
       @socket.on 'connect', () =>
         @socket.emit 'joinparty',

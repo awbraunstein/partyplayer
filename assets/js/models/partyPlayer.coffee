@@ -15,7 +15,7 @@ define (require, exports, module) ->
 
     initialize: () ->
       # Create socket.io actions
-      @socket = io.connect "http://localhost:#{SOCKET_PORT}"
+      @socket = io.connect "http://#{window.location.hostname}:#{SOCKET_PORT}"
       @socket.emit 'createparty', id: @id
 
       @socket.on 'addsong', (song) =>
